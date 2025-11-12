@@ -7,7 +7,7 @@
 
     // Environment Settings
     // See also https://aka.ms/tsconfig/module
-    "module": "es2022",
+    "module": "nodenext",
     "target": "esnext",
     "types": [],
     // For nodejs:
@@ -21,7 +21,7 @@
     "declarationMap": true,
 
     // Stricter Typechecking Options
-    "noUncheckedIndexedAccess": true,
+    // "noUncheckedIndexedAccess": true,
     "exactOptionalPropertyTypes": true,
 
     // Style Options
@@ -39,6 +39,9 @@
     "isolatedModules": true,
     "noUncheckedSideEffectImports": true,
     "moduleDetection": "force",
-    "skipLibCheck": true
-  }
+    "skipLibCheck": true,
+    "noEmit": true
+  },
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", "dist"]
 }
