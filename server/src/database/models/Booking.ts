@@ -7,13 +7,10 @@ export interface BookingData {
   party_size: number;
   table_number: number;
   special_instructions: string | null;
-  id: number;
+  user_id: number;
 }
 
-export async function checkBookingConflict(
-  table: number,
-  datetime: Date
-): Promise<boolean> {
+export async function checkBookingConflict(table: number, datetime: Date): Promise<boolean> {
   const pool = getPool();
 
   const [rows] = await pool.query<RowDataPacket[]>(
@@ -24,13 +21,12 @@ export async function checkBookingConflict(
   return rows.length > 0;
 }
 
-export async function bookingIdConflict(id: number): Promise<boolean> {
+export async function bookingIdConflict(booking_id: string): Promise<boolean> {
   const pool = getPool();
 
-  const [rows] = await pool.query<RowDataPacket[]>(
-    "SELECT 1 FROM bookings WHERE booking_id = ?",
-    [id]
-  );
+  const [rows] = await pool.query<RowDataPacket[]>("SELECT 1 FROM bookings WHERE booking_id = ?", [
+    booking_id,
+  ]);
 
   return rows.length > 0;
 }
@@ -41,22 +37,15 @@ export async function createBooking(
   party_size: number,
   table_number: number,
   special_instructions: string | null,
-  id: number
+  user_id: number
 ): Promise<void> {
   const pool = getPool();
 
   if (!special_instructions) special_instructions = "";
 
   const [_rows] = await pool.query<ResultSetHeader>(
-    "INSERT INTO bookings (booking_id, booking_date, party_size, table_number, special_instructions, id) VALUES (?, ?, ?, ?, ?, ?)",
-    [
-      booking_id,
-      booking_date,
-      party_size,
-      table_number,
-      special_instructions,
-      id,
-    ]
+    "INSERT INTO bookings (booking_id, booking_date, party_size, table_number, special_instructions, user_id) VALUES (?, ?, ?, ?, ?, ?)",
+    [booking_id, booking_date, party_size, table_number, special_instructions, user_id]
   );
 }
 
@@ -64,18 +53,18 @@ export async function getUserBookings(userId: number): Promise<BookingData[]> {
   const pool = getPool();
 
   const [rows] = await pool.query<RowDataPacket[]>(
-    "SELECT * FROM bookings WHERE id = ? ORDER BY booking_date DESC",
+    "SELECT * FROM bookings WHERE user_id = ? ORDER BY booking_date DESC",
     [userId]
   );
 
   return rows as BookingData[];
 }
 
-export async function deleteBooking(bookingId: number, userId: number) {
+export async function deleteBooking(bookingId: string, userId: number) {
   const pool = getPool();
 
   const [result] = await pool.query<ResultSetHeader>(
-    "DELETE FROM bookings WHERE booking_id = ? AND id = ?",
+    "DELETE FROM bookings WHERE booking_id = ? AND user_id = ?",
     [bookingId, userId]
   );
 
