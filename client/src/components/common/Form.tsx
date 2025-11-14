@@ -13,7 +13,7 @@ export default function Form(props: FormProps) {
   };
 
   return (
-    <form onSubmit={handleSubmit} class="props.class">
+    <form onSubmit={handleSubmit} class={props.class}>
       {props.children}
     </form>
   );

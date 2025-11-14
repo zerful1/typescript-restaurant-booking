@@ -12,8 +12,14 @@ export default function Nav() {
           Restaurant Booking
         </A>
 
-        <Show when={!loading}>
+        <Show when={!loading()}>
           <div class="nav-links">
+            <A href="/about" class="nav-link">
+              About
+            </A>
+            <A href="/contact" class="nav-link">
+              Contact
+            </A>
             <Show
               when={user()}
               fallback={
@@ -35,6 +41,9 @@ export default function Nav() {
               </A>
               <A href="/profile" class="nav-link">
                 Profile
+              </A>
+              <A href="/logout" class="nav-link">
+                Logout
               </A>
             </Show>
           </div>

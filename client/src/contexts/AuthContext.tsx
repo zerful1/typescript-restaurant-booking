@@ -28,10 +28,12 @@ export function AuthProvider(props: { children: JSX.Element }) {
   async function refreshAuth() {
     setLoading(true);
     try {
-      const response = await fetch("/api/auth/isAuth");
+      const response = await fetch("/api/userdata", {
+        method: "POST",
+      });
       if (response.ok) {
         const data = await response.json();
-        setUser(data);
+        setUser({ id: data.user_id, email: data.email });
       } else {
         setUser(null);
       }
@@ -44,10 +46,10 @@ export function AuthProvider(props: { children: JSX.Element }) {
   }
 
   async function register(email: string, password: string) {
-    const response = await fetch("/api/user/register", {
+    const response = await fetch("/api/register", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email, password }),
+      body: JSON.stringify({ email, password, confirmPassword: password }),
     });
 
     if (!response.ok) {
@@ -59,7 +61,7 @@ export function AuthProvider(props: { children: JSX.Element }) {
   }
 
   async function login(email: string, password: string) {
-    const response = await fetch("/api/user/login", {
+    const response = await fetch("/api/login", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ email, password }),
@@ -74,11 +76,11 @@ export function AuthProvider(props: { children: JSX.Element }) {
   }
 
   async function logout() {
-    const response = await fetch("/api/auth/logout", {
+    const response = await fetch("/api/logout", {
       method: "POST",
     });
 
-    if (response.ok) {
+    if (!response.ok) {
       throw new Error("Logout failed");
     }
 
@@ -86,8 +88,8 @@ export function AuthProvider(props: { children: JSX.Element }) {
   }
 
   async function deleteAccount() {
-    const response = await fetch("/api/user", {
-      method: "DELETE",
+    const response = await fetch("/api/delete", {
+      method: "POST",
     });
 
     if (!response.ok) {

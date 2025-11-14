@@ -3,11 +3,11 @@ import chalk from "chalk";
 import fs from "fs";
 import { createPool, DATABASE_NAME } from "./connection.js";
 
-const dbSchema = "../schemas/main.sql";
+const dbSchema = "src/schemas/main.sql";
 
 async function dbExists(connection: mysql.Connection): Promise<boolean> {
   const [databases] = await connection.query<mysql.RowDataPacket[]>(
-    `SHOW DATABASES LIKE ${DATABASE_NAME}`
+    `SHOW DATABASES LIKE '${DATABASE_NAME}'`
   );
   return databases.length > 0;
 }
