@@ -1,0 +1,120 @@
+import { createContext, useContext, createSignal, onMount, type JSX } from "solid-js";
+
+interface User {
+  id: number;
+  email: string;
+}
+
+interface AuthContextType {
+  user: () => User | null;
+  loading: () => boolean;
+  login: (email: string, password: string) => Promise<void>;
+  register: (email: string, password: string) => Promise<void>;
+  logout: () => Promise<void>;
+  deleteAccount: () => Promise<void>;
+  refreshAuth: () => Promise<void>;
+}
+
+const AuthContext = createContext<AuthContextType>();
+
+export function AuthProvider(props: { children: JSX.Element }) {
+  const [user, setUser] = createSignal<User | null>(null);
+  const [loading, setLoading] = createSignal(true);
+
+  onMount(() => {
+    refreshAuth();
+  });
+
+  async function refreshAuth() {
+    setLoading(true);
+    try {
+      const response = await fetch("/api/auth/isAuth");
+      if (response.ok) {
+        const data = await response.json();
+        setUser(data);
+      } else {
+        setUser(null);
+      }
+    } catch (error) {
+      console.error("Auth check failed:", error);
+      setUser(null);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  async function register(email: string, password: string) {
+    const response = await fetch("/api/user/register", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email, password }),
+    });
+
+    if (!response.ok) {
+      const data = await response.json();
+      throw new Error(data.message || "Registration failed");
+    }
+
+    await refreshAuth();
+  }
+
+  async function login(email: string, password: string) {
+    const response = await fetch("/api/user/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email, password }),
+    });
+
+    if (!response.ok) {
+      const data = await response.json();
+      throw new Error(data.message || "Login failed");
+    }
+
+    await refreshAuth();
+  }
+
+  async function logout() {
+    const response = await fetch("/api/auth/logout", {
+      method: "POST",
+    });
+
+    if (response.ok) {
+      throw new Error("Logout failed");
+    }
+
+    setUser(null);
+  }
+
+  async function deleteAccount() {
+    const response = await fetch("/api/user", {
+      method: "DELETE",
+    });
+
+    if (!response.ok) {
+      const data = await response.json();
+      throw new Error(data.message || "Account deletion failed");
+    }
+
+    setUser(null);
+  }
+
+  const value: AuthContextType = {
+    user,
+    loading,
+    login,
+    register,
+    logout,
+    deleteAccount,
+    refreshAuth,
+  };
+
+  return <AuthContext.Provider value={value}>{props.children}</AuthContext.Provider>;
+}
+
+export function useAuth() {
+  const context = useContext(AuthContext);
+  if (!context) {
+    throw new Error("useAuth must be used within AuthProvider");
+  }
+  return context;
+}

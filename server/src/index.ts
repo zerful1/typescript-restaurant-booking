@@ -4,10 +4,10 @@ import chalk from "chalk";
 import { initializeDatabase } from "./database/index.js";
 
 // Routes
-import authRouter from "./routes/auth.js";
-import userRouter from "./routes/user.js";
-import passwordRouter from "./routes/password.js";
-import bookingRouter from "./routes/booking.js";
+import authRoute from "./routes/auth.js";
+import userRoute from "./routes/user.js";
+import passwordRoute from "./routes/password.js";
+import bookingRoute from "./routes/booking.js";
 
 const app = express();
 const PORT = 5000;
@@ -28,10 +28,10 @@ app.use(
   })
 );
 
-app.use("/api", authRouter);
-app.use("/api", userRouter);
-app.use("/api", passwordRouter);
-app.use("/api", bookingRouter);
+app.use("/api", authRoute);
+app.use("/api", userRoute);
+app.use("/api", passwordRoute);
+app.use("/api", bookingRoute);
 
 async function startServer() {
   try {

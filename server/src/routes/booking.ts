@@ -1,12 +1,6 @@
 import express from "express";
 import crypto from "crypto";
-import {
-  checkBookingConflict,
-  createBooking,
-  bookingIdConflict,
-  getUserBookings,
-  deleteBooking,
-} from "../database/models/Booking.js";
+import { Booking } from "../database/index.js";
 
 const router = express.Router();
 
@@ -28,18 +22,18 @@ router.post("/book/create", async (req, res) => {
       return res.status(400).json({ message: "Invalid datetime format" });
     }
 
-    const isConflict = await checkBookingConflict(table_number, bookingDate);
+    const isConflict = await Booking.checkBookingConflict(table_number, bookingDate);
 
     if (isConflict) {
       return res.status(409).json({ message: "Booking conflict" });
     }
 
     let bookingId = crypto.randomBytes(4).toString("hex");
-    while (await bookingIdConflict(bookingId)) {
+    while (await Booking.bookingIdConflict(bookingId)) {
       bookingId = crypto.randomBytes(4).toString("hex");
     }
 
-    await createBooking(
+    await Booking.createBooking(
       bookingId,
       bookingDate,
       party_size,
@@ -61,7 +55,7 @@ router.get("/book/list", async (req, res) => {
   }
 
   try {
-    const bookings = await getUserBookings(req.session.userId);
+    const bookings = await Booking.getUserBookings(req.session.userId);
     return res.json({ bookings });
   } catch (error) {
     console.error("Get bookings error:", error);
@@ -77,7 +71,7 @@ router.delete("/book/delete/:bookingId", async (req, res) => {
   const { bookingId } = req.params;
 
   try {
-    const deleted = await deleteBooking(bookingId, req.session.userId);
+    const deleted = await Booking.deleteBooking(bookingId, req.session.userId);
 
     if (!deleted) {
       return res.status(404).json({ message: "Booking not found" });
