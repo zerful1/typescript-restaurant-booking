@@ -1,14 +1,11 @@
 import express from "express";
 import crypto from "crypto";
 import { Booking } from "../database/index.js";
+import { requireAuth } from "../middleware/auth.js";
 
 const router = express.Router();
 
-router.post("/book/create", async (req, res) => {
-  if (!req.session.userId) {
-    return res.status(401).json({ message: "Not authenticated" });
-  }
-
+router.post("/book/create", requireAuth, async (req, res) => {
   const { party_size, table_number, datetime, special_instructions } = req.body;
 
   if (!party_size || !table_number || !datetime) {
@@ -39,7 +36,7 @@ router.post("/book/create", async (req, res) => {
       party_size,
       table_number,
       special_instructions,
-      req.session.userId
+      req.session.userId!
     );
 
     return res.status(201).json({ message: "Booking created successfully", bookingId });
@@ -49,13 +46,9 @@ router.post("/book/create", async (req, res) => {
   }
 });
 
-router.get("/book/list", async (req, res) => {
-  if (!req.session.userId) {
-    return res.status(401).json({ message: "Not authenticated" });
-  }
-
+router.get("/book/list", requireAuth, async (req, res) => {
   try {
-    const bookings = await Booking.getUserBookings(req.session.userId);
+    const bookings = await Booking.getUserBookings(req.session.userId!);
     return res.json({ bookings });
   } catch (error) {
     console.error("Get bookings error:", error);
@@ -63,15 +56,11 @@ router.get("/book/list", async (req, res) => {
   }
 });
 
-router.delete("/book/delete/:bookingId", async (req, res) => {
-  if (!req.session.userId) {
-    return res.status(401).json({ message: "Not authenticated" });
-  }
-
+router.delete("/book/delete/:bookingId", requireAuth, async (req, res) => {
   const { bookingId } = req.params;
 
   try {
-    const deleted = await Booking.deleteBooking(bookingId, req.session.userId);
+    const deleted = await Booking.deleteBooking(bookingId, req.session.userId!);
 
     if (!deleted) {
       return res.status(404).json({ message: "Booking not found" });

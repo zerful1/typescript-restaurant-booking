@@ -6,25 +6,22 @@ import { getPool } from "../connection.js";
 export interface UserData {
   id: number;
   email: string;
+  role: "user" | "admin";
 }
 
 export async function getUserId(email: string): Promise<number | false> {
   const pool = getPool();
-  const [users] = await pool.query<RowDataPacket[]>(
-    "SELECT id FROM users WHERE email = ?",
-    [email]
-  );
+  const [users] = await pool.query<RowDataPacket[]>("SELECT id FROM users WHERE email = ?", [
+    email,
+  ]);
 
   return users.length > 0 ? users[0].id : false;
 }
 
-export async function canLoginUser(
-  email: string,
-  password: string
-): Promise<number | false> {
+export async function canLoginUser(email: string, password: string): Promise<number | false> {
   const pool = getPool();
   const [users] = await pool.query<RowDataPacket[]>(
-    "SELECT id, password_hash FROM users WHERE email = ?",
+    "SELECT id, password_hash, role FROM users WHERE email = ?",
     [email]
   );
 
@@ -37,10 +34,7 @@ export async function canLoginUser(
   return isValid ? user.id : false;
 }
 
-export async function registerUser(
-  email: string,
-  password: string
-): Promise<number> {
+export async function registerUser(email: string, password: string): Promise<number> {
   const pool = getPool();
   const hashedPassword = await bcrypt.hash(password, 10);
 
@@ -48,6 +42,7 @@ export async function registerUser(
     "INSERT INTO users (email, password_hash) VALUES (?, ?)",
     [email, hashedPassword]
   );
+
   return result.insertId;
 }
 
@@ -55,7 +50,7 @@ export async function getUserData(id: number): Promise<UserData | null> {
   const pool = getPool();
 
   const [users] = await pool.query<RowDataPacket[]>(
-    "SELECT id, email FROM users WHERE id = ?",
+    "SELECT id, email, role FROM users WHERE id = ?",
     [id]
   );
 
@@ -78,10 +73,7 @@ export async function createPasswordReset(email: string): Promise<string> {
   return token;
 }
 
-export async function completePasswordReset(
-  token: string,
-  newPassword: string
-): Promise<boolean> {
+export async function completePasswordReset(token: string, newPassword: string): Promise<boolean> {
   const pool = getPool();
 
   const [users] = await pool.query<RowDataPacket[]>(
@@ -106,10 +98,21 @@ export async function completePasswordReset(
 export async function deleteAccount(userId: number): Promise<boolean> {
   const pool = getPool();
 
-  const [result] = await pool.query<ResultSetHeader>(
-    "DELETE FROM users WHERE id = ?",
-    [userId]
-  );
+  const [result] = await pool.query<ResultSetHeader>("DELETE FROM users WHERE id = ?", [userId]);
 
   return result.affectedRows > 0;
+}
+
+export async function getUserById(id: number): Promise<UserData | null> {
+  return getUserData(id);
+}
+
+export async function getAllUsers(): Promise<UserData[]> {
+  const pool = getPool();
+
+  const [users] = await pool.query<RowDataPacket[]>(
+    "SELECT id, email, role FROM users ORDER BY id ASC"
+  );
+
+  return users as UserData[];
 }

@@ -5,6 +5,7 @@ CREATE TABLE IF NOT EXISTS users (
   id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
   email VARCHAR(255) NOT NULL UNIQUE,
   password_hash VARCHAR(255) NOT NULL,
+  role ENUM('user', 'admin') NOT NULL DEFAULT 'user',
   reset_token CHAR(64) DEFAULT NULL,
   reset_expires DATETIME DEFAULT NULL
 );
@@ -19,6 +20,6 @@ CREATE TABLE IF NOT EXISTS bookings (
   FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
 
-INSERT INTO users(email, password_hash) SELECT "admin@admin.com", "password_hash" WHERE NOT EXISTS (
+INSERT INTO users(email, password_hash, role) SELECT "admin@admin.com", "$2b$10$Fwi60zeuBL9Z0vMHy0Ygke7ZEzyVkDliAObo5M3J4zPnTLRxr78Mi", "admin" WHERE NOT EXISTS (
   SELECT 1 FROM users WHERE email = "admin@admin.com"
 );

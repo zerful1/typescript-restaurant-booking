@@ -8,6 +8,7 @@ import authRoute from "./routes/auth.js";
 import userRoute from "./routes/user.js";
 import passwordRoute from "./routes/password.js";
 import bookingRoute from "./routes/booking.js";
+import adminRoute from "./routes/admin.js";
 
 const app = express();
 const PORT = 5000;
@@ -32,6 +33,7 @@ app.use("/api", authRoute);
 app.use("/api", userRoute);
 app.use("/api", passwordRoute);
 app.use("/api", bookingRoute);
+app.use("/api", adminRoute);
 
 async function startServer() {
   try {

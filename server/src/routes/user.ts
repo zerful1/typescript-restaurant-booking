@@ -1,5 +1,6 @@
 import express from "express";
 import { User } from "../database/index.js";
+import { requireAuth } from "../middleware/auth.js";
 
 const router = express.Router();
 
@@ -34,6 +35,7 @@ router.post("/register", async (req, res) => {
     const userId = await User.registerUser(email, password);
 
     req.session.userId = userId;
+    req.session.role = "user";
 
     return res.status(201).json({ message: "Registration successful" });
   } catch (error) {
@@ -60,7 +62,13 @@ router.post("/login", async (req, res) => {
       return res.status(401).json({ message: "Invalid email or password" });
     }
 
+    const userData = await User.getUserData(userId);
+    if (!userData) {
+      return res.status(500).json({ message: "Failed to retrieve user data" });
+    }
+
     req.session.userId = userId;
+    req.session.role = userData.role;
 
     return res.json({ message: "Login successful" });
   } catch (error) {
@@ -87,13 +95,9 @@ router.post("/logout", async (req, res) => {
   return;
 });
 
-router.post("/userdata", async (req, res) => {
-  if (!req.session.userId) {
-    return res.status(400).json({ message: "Not authenticated" });
-  }
-
+router.post("/userdata", requireAuth, async (req, res) => {
   try {
-    const userData = await User.getUserData(req.session.userId);
+    const userData = await User.getUserData(req.session.userId!);
 
     if (!userData) {
       return res.status(404).json({ message: "User not found" });
@@ -106,13 +110,9 @@ router.post("/userdata", async (req, res) => {
   }
 });
 
-router.post("/delete", async (req, res) => {
-  if (!req.session.userId) {
-    return res.status(400).json({ message: "Not authenticated" });
-  }
-
+router.post("/delete", requireAuth, async (req, res) => {
   try {
-    const deleted = await User.deleteAccount(req.session.userId);
+    const deleted = await User.deleteAccount(req.session.userId!);
 
     if (!deleted) {
       return res.status(404).json({ message: "User not found" });

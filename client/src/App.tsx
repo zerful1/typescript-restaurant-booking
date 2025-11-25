@@ -14,6 +14,7 @@ import Delete from "./pages/Delete";
 import Booking from "./pages/Booking";
 import Forgot from "./pages/Forgot";
 import Reset from "./pages/Reset";
+import Admin from "./pages/Admin";
 import NotFound from "./pages/NotFound";
 import "./App.css";
 
@@ -42,6 +43,7 @@ const App = () => {
       <Route path="/book" component={Booking} />
       <Route path="/forgot" component={Forgot} />
       <Route path="/reset-password" component={Reset} />
+      <Route path="/admin" component={Admin} />
       <Route path="*" component={NotFound} />
     </Router>
   );

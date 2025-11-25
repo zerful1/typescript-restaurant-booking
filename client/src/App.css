@@ -71,6 +71,17 @@ body {
   color: white;
 }
 
+.admin-link {
+  background-color: #fbbf24;
+  color: #78350f;
+  font-weight: 600;
+}
+
+.admin-link:hover {
+  background-color: #f59e0b;
+  color: #78350f;
+}
+
 /* Flash messages */
 .flash {
   position: fixed;

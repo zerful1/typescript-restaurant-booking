@@ -3,11 +3,13 @@ import { createContext, useContext, createSignal, onMount, type JSX } from "soli
 interface User {
   id: number;
   email: string;
+  role: "user" | "admin";
 }
 
 interface AuthContextType {
   user: () => User | null;
   loading: () => boolean;
+  isAdmin: () => boolean;
   login: (email: string, password: string) => Promise<void>;
   register: (email: string, password: string) => Promise<void>;
   logout: () => Promise<void>;
@@ -25,6 +27,10 @@ export function AuthProvider(props: { children: JSX.Element }) {
     refreshAuth();
   });
 
+  function isAdmin() {
+    return user()?.role === "admin";
+  }
+
   async function refreshAuth() {
     setLoading(true);
     try {
@@ -33,7 +39,7 @@ export function AuthProvider(props: { children: JSX.Element }) {
       });
       if (response.ok) {
         const data = await response.json();
-        setUser({ id: data.user_id, email: data.email });
+        setUser({ id: data.id, email: data.email, role: data.role });
       } else {
         setUser(null);
       }
@@ -103,6 +109,7 @@ export function AuthProvider(props: { children: JSX.Element }) {
   const value: AuthContextType = {
     user,
     loading,
+    isAdmin,
     login,
     register,
     logout,

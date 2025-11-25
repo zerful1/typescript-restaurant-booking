@@ -70,3 +70,23 @@ export async function deleteBooking(bookingId: string, userId: number) {
 
   return result.affectedRows > 0;
 }
+
+export async function getAllBookings(): Promise<BookingData[]> {
+  const pool = getPool();
+
+  const [rows] = await pool.query<RowDataPacket[]>(
+    "SELECT * FROM bookings ORDER BY booking_date DESC"
+  );
+
+  return rows as BookingData[];
+}
+
+export async function deleteBookingById(bookingId: string): Promise<boolean> {
+  const pool = getPool();
+
+  const [result] = await pool.query<ResultSetHeader>("DELETE FROM bookings WHERE booking_id = ?", [
+    bookingId,
+  ]);
+
+  return result.affectedRows > 0;
+}

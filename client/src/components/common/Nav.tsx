@@ -3,7 +3,7 @@ import { A } from "@solidjs/router";
 import { useAuth } from "../../contexts/AuthContext";
 
 export default function Nav() {
-  const { user, loading } = useAuth();
+  const { user, loading, isAdmin } = useAuth();
 
   return (
     <nav class="nav">
@@ -39,6 +39,11 @@ export default function Nav() {
               <A href="/book" class="nav-link">
                 New Booking
               </A>
+              <Show when={isAdmin()}>
+                <A href="/admin" class="nav-link admin-link">
+                  Admin
+                </A>
+              </Show>
               <A href="/profile" class="nav-link">
                 Profile
               </A>
