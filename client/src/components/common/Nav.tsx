@@ -20,6 +20,9 @@ export default function Nav() {
             <A href="/contact" class="nav-link">
               Contact
             </A>
+            <A href="/menu" class="nav-link">
+              Menu
+            </A>
             <Show
               when={user()}
               fallback={
@@ -33,6 +36,12 @@ export default function Nav() {
                 </>
               }
             >
+              <A href="/cart" class="nav-link">
+                Cart
+              </A>
+              <A href="/orders" class="nav-link">
+                Orders
+              </A>
               <A href="/bookings" class="nav-link">
                 My Bookings
               </A>

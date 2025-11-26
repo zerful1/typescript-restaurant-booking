@@ -1,3 +1,4 @@
+import "dotenv/config";
 import express from "express";
 import session from "express-session";
 import chalk from "chalk";
@@ -9,6 +10,9 @@ import userRoute from "./routes/user.js";
 import passwordRoute from "./routes/password.js";
 import bookingRoute from "./routes/booking.js";
 import adminRoute from "./routes/admin.js";
+import menuRoute from "./routes/menu.js";
+import cartRoute from "./routes/cart.js";
+import stripeRoute from "./routes/stripe.js";
 
 const app = express();
 const PORT = 5000;
@@ -34,6 +38,9 @@ app.use("/api", userRoute);
 app.use("/api", passwordRoute);
 app.use("/api", bookingRoute);
 app.use("/api", adminRoute);
+app.use("/api", menuRoute);
+app.use("/api", cartRoute);
+app.use("/api", stripeRoute);
 
 async function startServer() {
   try {

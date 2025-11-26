@@ -15,6 +15,11 @@ import Booking from "./pages/Booking";
 import Forgot from "./pages/Forgot";
 import Reset from "./pages/Reset";
 import Admin from "./pages/Admin";
+import Menu from "./pages/Menu";
+import Cart from "./pages/Cart";
+import Orders from "./pages/Orders";
+import CheckoutSuccess from "./pages/CheckoutSuccess";
+import CheckoutCancelled from "./pages/CheckoutCancelled";
 import NotFound from "./pages/NotFound";
 import "./App.css";
 
@@ -44,6 +49,11 @@ const App = () => {
       <Route path="/forgot" component={Forgot} />
       <Route path="/reset-password" component={Reset} />
       <Route path="/admin" component={Admin} />
+      <Route path="/menu" component={Menu} />
+      <Route path="/cart" component={Cart} />
+      <Route path="/orders" component={Orders} />
+      <Route path="/checkout/success" component={CheckoutSuccess} />
+      <Route path="/checkout/cancelled" component={CheckoutCancelled} />
       <Route path="*" component={NotFound} />
     </Router>
   );

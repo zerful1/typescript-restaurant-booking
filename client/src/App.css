@@ -660,3 +660,264 @@ body {
     min-width: auto;
   }
 }
+
+/* Menu page styles */
+.category-filter {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 2rem;
+}
+
+.menu-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.5rem;
+}
+
+.menu-card {
+  background: #27272a;
+  border: 1px solid #3f3f46;
+  border-radius: 8px;
+  overflow: hidden;
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.menu-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
+}
+
+.menu-image {
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
+}
+
+.menu-card-content {
+  padding: 1.5rem;
+}
+
+.menu-card-content h3 {
+  color: #fafafa;
+  margin-bottom: 0.5rem;
+}
+
+.menu-category {
+  color: #60a5fa;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  margin-bottom: 0.5rem;
+}
+
+.menu-description {
+  color: #a1a1aa;
+  font-size: 0.9rem;
+  margin-bottom: 1rem;
+}
+
+.menu-price {
+  color: #22c55e;
+  font-size: 1.25rem;
+  font-weight: bold;
+  margin-bottom: 1rem;
+}
+
+/* Cart styles */
+.auth-prompt,
+.empty-cart,
+.empty-orders {
+  text-align: center;
+  padding: 3rem;
+  background: #27272a;
+  border-radius: 8px;
+  border: 1px solid #3f3f46;
+}
+
+.auth-prompt p,
+.empty-cart p,
+.empty-orders p {
+  color: #a1a1aa;
+  margin-bottom: 1.5rem;
+}
+
+.cart-items {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.cart-item {
+  background: #27272a;
+  border: 1px solid #3f3f46;
+  border-radius: 8px;
+  padding: 1.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.cart-item-info h3 {
+  color: #fafafa;
+  margin-bottom: 0.25rem;
+}
+
+.cart-item-price {
+  color: #a1a1aa;
+  font-size: 0.9rem;
+}
+
+.cart-item-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.cart-item-controls .quantity {
+  color: #fafafa;
+  font-size: 1.1rem;
+  min-width: 2rem;
+  text-align: center;
+}
+
+.cart-item-controls .item-total {
+  color: #22c55e;
+  font-weight: bold;
+  min-width: 80px;
+  text-align: right;
+}
+
+.cart-summary {
+  background: #27272a;
+  border: 1px solid #3f3f46;
+  border-radius: 8px;
+  padding: 1.5rem;
+}
+
+.cart-total {
+  font-size: 1.5rem;
+  color: #fafafa;
+  margin-bottom: 1.5rem;
+  text-align: right;
+}
+
+.cart-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+}
+
+/* Checkout result styles */
+.checkout-result {
+  text-align: center;
+  padding: 3rem;
+  background: #27272a;
+  border-radius: 8px;
+  border: 1px solid #3f3f46;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.checkout-result h1 {
+  color: #fafafa;
+  margin-bottom: 1rem;
+}
+
+.checkout-result p {
+  color: #a1a1aa;
+  margin-bottom: 1rem;
+}
+
+.checkout-result.success h1 {
+  color: #22c55e;
+}
+
+.checkout-result.cancelled h1 {
+  color: #ef4444;
+}
+
+.order-number {
+  font-size: 1.25rem;
+  color: #60a5fa;
+  font-weight: bold;
+}
+
+.checkout-actions {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin-top: 2rem;
+}
+
+/* Orders styles */
+.orders-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.order-card {
+  background: #27272a;
+  border: 1px solid #3f3f46;
+  border-radius: 8px;
+  padding: 1.5rem;
+}
+
+.order-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.order-id {
+  color: #fafafa;
+  font-size: 1.1rem;
+  font-weight: bold;
+}
+
+.order-status {
+  padding: 0.25rem 0.75rem;
+  border-radius: 4px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.status-success {
+  background: #065f46;
+  color: #d1fae5;
+}
+
+.status-warning {
+  background: #854d0e;
+  color: #fef9c3;
+}
+
+.status-error {
+  background: #7f1d1d;
+  color: #fecaca;
+}
+
+.status-info {
+  background: #1e3a8a;
+  color: #bfdbfe;
+}
+
+.order-details {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.order-date {
+  color: #a1a1aa;
+  font-size: 0.9rem;
+}
+
+.order-total {
+  color: #fafafa;
+}
