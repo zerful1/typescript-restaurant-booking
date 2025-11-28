@@ -26,12 +26,44 @@ router.get("/menu/categories", async (_req, res) => {
   }
 });
 
+// Get menu items by IDs (for cart display) - MUST be before /menu/:id
+router.get("/menu/items", async (req, res) => {
+  const { ids } = req.query;
+
+  if (!ids || typeof ids !== "string") {
+    return res.status(400).json({ message: "IDs parameter is required" });
+  }
+
+  try {
+    const idArray = ids
+      .split(",")
+      .map((id) => parseInt(id, 10))
+      .filter((id) => !isNaN(id));
+
+    if (idArray.length === 0) {
+      return res.json({ items: [] });
+    }
+
+    const items = await MenuItem.getMenuItemsByIds(idArray);
+    return res.json({ items });
+  } catch (error) {
+    console.error("Get menu items by IDs error:", error);
+    return res.status(500).json({ message: "Internal server error" });
+  }
+});
+
 // Get menu item by ID
 router.get("/menu/:id", async (req, res) => {
   const { id } = req.params;
+  const numericId = parseInt(id, 10);
+
+  // Guard against non-numeric IDs (e.g., "items" being caught by this route)
+  if (isNaN(numericId)) {
+    return res.status(400).json({ message: "Invalid menu item ID" });
+  }
 
   try {
-    const item = await MenuItem.getMenuItemById(parseInt(id, 10));
+    const item = await MenuItem.getMenuItemById(numericId);
 
     if (!item) {
       return res.status(404).json({ message: "Menu item not found" });

@@ -96,3 +96,17 @@ export async function deleteMenuItem(id: number): Promise<boolean> {
 
   return result.affectedRows > 0;
 }
+
+export async function getMenuItemsByIds(ids: number[]): Promise<MenuItemData[]> {
+  if (ids.length === 0) return [];
+
+  const pool = getPool();
+  const placeholders = ids.map(() => "?").join(",");
+
+  const [rows] = await pool.query<RowDataPacket[]>(
+    `SELECT * FROM menu_items WHERE id IN (${placeholders}) AND available = TRUE`,
+    ids
+  );
+
+  return rows as MenuItemData[];
+}

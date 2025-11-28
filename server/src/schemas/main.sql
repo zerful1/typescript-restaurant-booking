@@ -40,7 +40,7 @@ CREATE TABLE IF NOT EXISTS cart_items (
   FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
   FOREIGN KEY (menu_item_id) REFERENCES menu_items(id) ON DELETE CASCADE,
   UNIQUE KEY unique_cart_item (user_id, menu_item_id)
-);
+); -- save in localStorage instead
 
 CREATE TABLE IF NOT EXISTS orders (
   id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,

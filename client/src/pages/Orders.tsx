@@ -91,7 +91,7 @@ export default function Orders() {
                           <div class="order-details">
                             <p class="order-date">{formatDate(order.created_at)}</p>
                             <p class="order-total">
-                              <strong>Total:</strong> ${Number(order.total).toFixed(2)}
+                              <strong>Total:</strong> £{Number(order.total).toFixed(2)}
                             </p>
                           </div>
                         </div>

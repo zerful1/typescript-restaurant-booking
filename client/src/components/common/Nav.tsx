@@ -14,15 +14,6 @@ export default function Nav() {
 
         <Show when={!loading()}>
           <div class="nav-links">
-            <A href="/about" class="nav-link">
-              About
-            </A>
-            <A href="/contact" class="nav-link">
-              Contact
-            </A>
-            <A href="/menu" class="nav-link">
-              Menu
-            </A>
             <Show
               when={user()}
               fallback={
@@ -36,26 +27,29 @@ export default function Nav() {
                 </>
               }
             >
-              <A href="/cart" class="nav-link">
-                Cart
-              </A>
-              <A href="/orders" class="nav-link">
-                Orders
-              </A>
-              <A href="/bookings" class="nav-link">
-                My Bookings
-              </A>
-              <A href="/book" class="nav-link">
-                New Booking
-              </A>
+              <Show when={!isAdmin()}>
+                <A href="/menu" class="nav-link">
+                  Menu
+                </A>
+                <A href="/cart" class="nav-link">
+                  Cart
+                </A>
+                <A href="/orders" class="nav-link">
+                  Orders
+                </A>
+                <A href="/book" class="nav-link">
+                  New Booking
+                </A>
+                <A href="/profile" class="nav-link">
+                  Profile
+                </A>
+              </Show>
               <Show when={isAdmin()}>
                 <A href="/admin" class="nav-link admin-link">
                   Admin
                 </A>
               </Show>
-              <A href="/profile" class="nav-link">
-                Profile
-              </A>
+
               <A href="/logout" class="nav-link">
                 Logout
               </A>

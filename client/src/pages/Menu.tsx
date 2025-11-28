@@ -1,6 +1,7 @@
 import { createSignal, createResource, For, Show } from "solid-js";
-import { useAuth } from "../contexts/AuthContext";
 import { useFlash } from "../contexts/FlashContext";
+import { useCart } from "../contexts/CartContext";
+import CartSidePanel from "../components/cart/CartSidePanel";
 
 interface MenuItem {
   id: number;
@@ -26,8 +27,8 @@ async function fetchCategories(): Promise<string[]> {
 }
 
 export default function Menu() {
-  const { user } = useAuth();
   const { setFlash } = useFlash();
+  const { addItem, itemCount, openPanel, refetchDetails } = useCart();
   const [selectedCategory, setSelectedCategory] = createSignal<string | null>(null);
   const [addingToCart, setAddingToCart] = createSignal<number | null>(null);
 
@@ -42,37 +43,31 @@ export default function Menu() {
     return items.filter((item) => item.category === category);
   };
 
-  const addToCart = async (menuItemId: number) => {
-    if (!user()) {
-      setFlash("Please log in to add items to cart", "error");
-      return;
-    }
-
+  const addToCart = (menuItemId: number) => {
     setAddingToCart(menuItemId);
 
-    try {
-      const res = await fetch("/api/cart/add", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ menuItemId, quantity: 1 }),
-      });
+    // Add to localStorage cart via context
+    addItem(menuItemId, 1);
+    refetchDetails();
+    setFlash("Item added to cart", "success");
 
-      if (res.ok) {
-        setFlash("Item added to cart", "success");
-      } else {
-        const data = await res.json();
-        setFlash(data.message || "Failed to add item to cart", "error");
-      }
-    } catch (error) {
-      setFlash("Failed to add item to cart", "error");
-    } finally {
+    // Brief visual feedback
+    setTimeout(() => {
       setAddingToCart(null);
-    }
+    }, 300);
   };
 
   return (
-    <div class="page">
-      <h1>Our Menu</h1>
+    <div class="page menu-page">
+      <div class="menu-header">
+        <h1>Our Menu</h1>
+        <button class="cart-toggle-btn" onClick={openPanel}>
+          🛒
+          <Show when={itemCount() > 0}>
+            <span class="cart-badge">{itemCount()}</span>
+          </Show>
+        </button>
+      </div>
 
       <Show when={!menuItems.loading} fallback={<p>Loading menu...</p>}>
         <Show when={menuItems()} fallback={<p>Failed to load menu</p>}>
@@ -108,7 +103,7 @@ export default function Menu() {
                     <Show when={item.description}>
                       <p class="menu-description">{item.description}</p>
                     </Show>
-                    <p class="menu-price">${Number(item.price).toFixed(2)}</p>
+                    <p class="menu-price">£{Number(item.price).toFixed(2)}</p>
                     <button
                       class="btn btn-primary"
                       onClick={() => addToCart(item.id)}
@@ -123,6 +118,9 @@ export default function Menu() {
           </div>
         </Show>
       </Show>
+
+      {/* Cart Side Panel */}
+      <CartSidePanel />
     </div>
   );
 }

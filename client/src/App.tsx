@@ -1,7 +1,9 @@
 import { Router, Route } from "@solidjs/router";
 import { AuthProvider } from "./contexts/AuthContext";
 import { FlashProvider } from "./contexts/FlashContext";
+import { CartProvider } from "./contexts/CartContext";
 import Nav from "./components/common/Nav";
+import Footer from "./components/common/Footer";
 import Flash from "./components/common/Flash";
 import Home from "./pages/Home";
 import About from "./pages/About";
@@ -29,9 +31,12 @@ const App = () => {
       root={(props) => (
         <FlashProvider>
           <AuthProvider>
-            <Nav />
-            <Flash />
-            <div class="main-content">{props.children}</div>
+            <CartProvider>
+              <Nav />
+              <Flash />
+              <div class="main-content">{props.children}</div>
+              <Footer />
+            </CartProvider>
           </AuthProvider>
         </FlashProvider>
       )}

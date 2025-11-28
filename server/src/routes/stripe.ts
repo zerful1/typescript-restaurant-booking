@@ -1,6 +1,6 @@
 import express from "express";
 import Stripe from "stripe";
-import * as CartItem from "../database/models/CartItem.js";
+import * as MenuItem from "../database/models/MenuItem.js";
 import * as Order from "../database/models/Order.js";
 import { requireAuth } from "../middleware/auth.js";
 
@@ -13,40 +13,63 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || "", {
 
 const CLIENT_URL = process.env.CLIENT_URL || "http://localhost:3000";
 
+interface CartItemInput {
+  menuItemId: number;
+  quantity: number;
+}
+
 // Create Stripe Checkout Session
 router.post("/checkout/create-session", requireAuth, async (req, res) => {
   try {
     const userId = req.session.userId!;
+    const { items } = req.body as { items: CartItemInput[] };
 
-    // Get cart items
-    const cartItems = await CartItem.getCartItems(userId);
-
-    if (cartItems.length === 0) {
+    // Validate cart items from request body
+    if (!items || !Array.isArray(items) || items.length === 0) {
       return res.status(400).json({ message: "Cart is empty" });
     }
 
-    const total = await CartItem.getCartTotal(userId);
+    // Fetch menu item prices from database (prevents price manipulation)
+    const menuItemIds = items.map((item) => item.menuItemId);
+    const menuItems = await MenuItem.getMenuItemsByIds(menuItemIds);
+
+    if (menuItems.length !== items.length) {
+      return res.status(400).json({ message: "Some items are no longer available" });
+    }
+
+    // Calculate total using DB prices
+    let total = 0;
+    const lineItems: Stripe.Checkout.SessionCreateParams.LineItem[] = [];
+
+    for (const cartItem of items) {
+      const menuItem = menuItems.find((mi) => mi.id === cartItem.menuItemId);
+      if (!menuItem) continue;
+
+      total += menuItem.price * cartItem.quantity;
+
+      lineItems.push({
+        price_data: {
+          currency: "usd",
+          product_data: {
+            name: menuItem.name,
+            description: menuItem.description ?? "",
+          },
+          unit_amount: Math.round(menuItem.price * 100), // Stripe expects cents
+        },
+        quantity: cartItem.quantity,
+      });
+    }
 
     // Create order in database
     const orderId = await Order.createOrder(userId, total);
 
     // Add order items
-    for (const item of cartItems) {
-      await Order.addOrderItem(orderId, item.menu_item_id, item.quantity, item.price);
+    for (const cartItem of items) {
+      const menuItem = menuItems.find((mi) => mi.id === cartItem.menuItemId);
+      if (menuItem) {
+        await Order.addOrderItem(orderId, menuItem.id, cartItem.quantity, menuItem.price);
+      }
     }
-
-    // Create Stripe line items
-    const lineItems: Stripe.Checkout.SessionCreateParams.LineItem[] = cartItems.map((item) => ({
-      price_data: {
-        currency: "usd",
-        product_data: {
-          name: item.name,
-          description: item.description ?? "",
-        },
-        unit_amount: Math.round(item.price * 100), // Stripe expects cents
-      },
-      quantity: item.quantity,
-    }));
 
     // Create Stripe checkout session
     const session = await stripe.checkout.sessions.create({
@@ -84,9 +107,7 @@ router.get("/checkout/verify/:sessionId", requireAuth, async (req, res) => {
 
       if (order) {
         await Order.updateOrderStatus(order.id, "paid");
-
-        // Clear the user's cart
-        await CartItem.clearCart(req.session.userId!);
+        // Cart is cleared client-side via localStorage
       }
 
       return res.json({
@@ -135,11 +156,7 @@ router.post("/webhook/stripe", express.raw({ type: "application/json" }), async 
 
         if (order) {
           await Order.updateOrderStatus(order.id, "paid");
-
-          // Clear user's cart
-          if (session.metadata?.userId) {
-            await CartItem.clearCart(parseInt(session.metadata.userId, 10));
-          }
+          // Cart is cleared client-side via localStorage
         }
       }
       break;
