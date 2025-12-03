@@ -13,6 +13,7 @@ import adminRoute from "./routes/admin.js";
 import menuRoute from "./routes/menu.js";
 import cartRoute from "./routes/cart.js";
 import stripeRoute from "./routes/stripe.js";
+import filesRoute from "./routes/files.js";
 
 const app = express();
 const PORT = 5000;
@@ -21,16 +22,16 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
 app.use(
-  session({
-    secret: "SuperSecretKey",
-    resave: false,
-    saveUninitialized: false,
-    cookie: {
-      httpOnly: true,
-      secure: false,
-      maxAge: 1000 * 60 * 60 * 24,
-    },
-  })
+	session({
+		secret: "SuperSecretKey",
+		resave: false,
+		saveUninitialized: false,
+		cookie: {
+			httpOnly: true,
+			secure: false,
+			maxAge: 1000 * 60 * 60 * 24,
+		},
+	})
 );
 
 app.use("/api", authRoute);
@@ -41,18 +42,21 @@ app.use("/api", adminRoute);
 app.use("/api", menuRoute);
 app.use("/api", cartRoute);
 app.use("/api", stripeRoute);
+app.use("/api", filesRoute);
 
 async function startServer() {
-  try {
-    await initializeDatabase();
+	try {
+		await initializeDatabase();
 
-    app.listen(PORT, () => {
-      console.log(chalk.cyan(`Server running on http://localhost:${PORT}`));
-    });
-  } catch (error) {
-    console.error(chalk.red("Failed to start server:"), error);
-    process.exit(1);
-  }
+		app.listen(PORT, () => {
+			console.log(
+				chalk.cyan(`Server running on http://localhost:${PORT}`)
+			);
+		});
+	} catch (error) {
+		console.error(chalk.red("Failed to start server:"), error);
+		process.exit(1);
+	}
 }
 
 startServer();

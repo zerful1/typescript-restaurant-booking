@@ -61,8 +61,8 @@ CREATE TABLE IF NOT EXISTS order_items (
   FOREIGN KEY (order_id) REFERENCES orders(id) ON DELETE CASCADE,
   FOREIGN KEY (menu_item_id) REFERENCES menu_items(id) ON DELETE CASCADE
 );
-
-INSERT INTO users(email, password_hash, role) SELECT "admin@admin.com", "$2b$10$Fwi60zeuBL9Z0vMHy0Ygke7ZEzyVkDliAObo5M3J4zPnTLRxr78Mi", "admin" WHERE NOT EXISTS (
+-- "$2b$10$Fwi60zeuBL9Z0vMHy0Ygke7ZEzyVkDliAObo5M3J4zPnTLRxr78Mi"
+INSERT INTO users(email, password_hash, role) SELECT "admin@admin.com", "[admin]", "admin" WHERE NOT EXISTS (
   SELECT 1 FROM users WHERE email = "admin@admin.com"
 );
 

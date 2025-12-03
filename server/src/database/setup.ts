@@ -2,6 +2,9 @@ import mysql from "mysql2/promise";
 import chalk from "chalk";
 import fs from "fs";
 import { createPool, DATABASE_NAME } from "./connection.js";
+import bcrypt from "bcrypt";
+
+const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || "root";
 
 const dbSchema = "src/schemas/main.sql";
 
@@ -18,10 +21,17 @@ async function runSQLOld(
 ): Promise<void> {
 	try {
 		const file = fs.readFileSync(filePath, "utf8");
+		const admin_password_hashed = await bcrypt.hash(ADMIN_PASSWORD, 10);
 
 		const statements = file
 			.split(";")
-			.map((stmt) => stmt.trim().replace(/\[db\]/, DATABASE_NAME))
+			.map((stmt) =>
+				stmt
+					.trim()
+					.replace(/\[db\]/, DATABASE_NAME)
+					.replace(/\[admin\]/, admin_password_hashed)
+			)
+
 			.filter((stmt) => stmt.length > 0)
 			.filter((stmt) => !stmt.startsWith("--"));
 
@@ -47,9 +57,11 @@ async function runSQL(
 	connection: mysql.Connection
 ): Promise<void> {
 	try {
+		const admin_password_hashed = await bcrypt.hash(ADMIN_PASSWORD, 10);
 		const file = fs
 			.readFileSync(filePath, "utf8")
-			.replace(/\[db\]/g, DATABASE_NAME);
+			.replace(/\[db\]/g, DATABASE_NAME)
+			.replace(/\[admin\]/g, admin_password_hashed);
 
 		console.log(chalk.yellow.bold("Running SQL file..."));
 
