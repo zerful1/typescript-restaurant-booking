@@ -18,11 +18,13 @@ interface Booking {
 }
 
 export default function Admin() {
-	const [activeTab, setActiveTab] = createSignal<"users" | "bookings">(
-		"users"
-	);
+	const [activeTab, setActiveTab] = createSignal<
+		"users" | "bookings" | "images"
+	>("users");
 	const [users, setUsers] = createSignal<User[]>([]);
 	const [bookings, setBookings] = createSignal<Booking[]>([]);
+	const [images, setImages] = createSignal<string[]>([]);
+	const [previewImage, setPreviewImage] = createSignal<string | null>(null);
 	const [loading, setLoading] = createSignal(false);
 	const { setFlash } = useFlash();
 	const navigate = useNavigate();
@@ -30,6 +32,7 @@ export default function Admin() {
 	onMount(() => {
 		fetchUsers();
 		fetchBookings();
+		fetchImages();
 	});
 
 	async function fetchUsers() {
@@ -108,6 +111,51 @@ export default function Admin() {
 		}
 	}
 
+	async function fetchImages() {
+		try {
+			const response = await fetch("/api/files/list");
+			if (!response.ok) {
+				throw new Error("Failed to fetch images");
+			}
+			const data = await response.json();
+			// Filter to only show image files
+			const imageFiles = data.filter((file: string) =>
+				/\.(jpg|jpeg|png|gif|webp|svg)$/i.test(file)
+			);
+			setImages(imageFiles);
+		} catch (error) {
+			setFlash((error as Error).message, "error");
+		}
+	}
+
+	async function deleteImage(filename: string) {
+		if (!confirm(`Are you sure you want to delete ${filename}?`)) {
+			return;
+		}
+
+		try {
+			const response = await fetch(
+				`/api/files/${encodeURIComponent(filename)}`,
+				{
+					method: "DELETE",
+				}
+			);
+
+			if (!response.ok) {
+				const data = await response.json();
+				throw new Error(data.message || "Failed to delete image");
+			}
+
+			setFlash("Image deleted successfully", "success");
+			setImages(images().filter((img) => img !== filename));
+			if (previewImage() === filename) {
+				setPreviewImage(null);
+			}
+		} catch (error) {
+			setFlash((error as Error).message, "error");
+		}
+	}
+
 	return (
 		<div class="page">
 			<div class="admin-container">
@@ -125,6 +173,12 @@ export default function Admin() {
 						onClick={() => setActiveTab("bookings")}
 					>
 						Bookings ({bookings().length})
+					</button>
+					<button
+						class={activeTab() === "images" ? "tab-active" : ""}
+						onClick={() => setActiveTab("images")}
+					>
+						Images ({images().length})
 					</button>
 					<button onClick={() => navigate("/upload")}>
 						Upload File
@@ -254,6 +308,77 @@ export default function Admin() {
 							}
 						>
 							<p>Loading bookings...</p>
+						</Show>
+					</div>
+				</Show>
+
+				<Show when={activeTab() === "images"}>
+					<div class="admin-section">
+						<h2>Image Management</h2>
+						<Show
+							when={images().length > 0}
+							fallback={<p>No images uploaded yet.</p>}
+						>
+							<table class="admin-table">
+								<thead>
+									<tr>
+										<th>Filename</th>
+										<th>Actions</th>
+									</tr>
+								</thead>
+								<tbody>
+									<For each={images()}>
+										{(image) => (
+											<tr>
+												<td>{image}</td>
+												<td class="image-actions">
+													<button
+														class="btn-preview"
+														onClick={() =>
+															setPreviewImage(
+																image
+															)
+														}
+													>
+														Preview
+													</button>
+													<button
+														class="btn-danger"
+														onClick={() =>
+															deleteImage(image)
+														}
+													>
+														Delete
+													</button>
+												</td>
+											</tr>
+										)}
+									</For>
+								</tbody>
+							</table>
+						</Show>
+
+						<Show when={previewImage()}>
+							<div
+								class="image-preview-modal"
+								onClick={() => setPreviewImage(null)}
+							>
+								<div
+									class="image-preview-content"
+									onClick={(e) => e.stopPropagation()}
+								>
+									<img
+										src={`/api/uploads/${previewImage()}`}
+										alt={previewImage()!}
+									/>
+									<button
+										class="preview-close"
+										onClick={() => setPreviewImage(null)}
+									>
+										×
+									</button>
+								</div>
+							</div>
 						</Show>
 					</div>
 				</Show>

@@ -7,9 +7,10 @@ export default function Flash() {
   return (
     <Show when={flash()}>
       <div class={`flash flash-${flash()!.type}`}>
+        <span style="font-size: 1.1rem;">{flash()!.type === "success" ? "✓" : "!"}</span>
         <p>{flash()!.message}</p>
-        <button onClick={clearFlash} class="flash-close">
-          x
+        <button onClick={clearFlash} class="flash-close" aria-label="Close">
+          ✕
         </button>
       </div>
     </Show>

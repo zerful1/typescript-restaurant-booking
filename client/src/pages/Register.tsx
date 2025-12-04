@@ -16,7 +16,7 @@ export default function Register() {
 
   const handleSubmit = async () => {
     if (password() !== confirmPassword()) {
-      return setFlash("Passwords do not match:", "error");
+      return setFlash("Passwords do not match", "error");
     }
 
     if (password().length < 8) {
@@ -27,7 +27,7 @@ export default function Register() {
 
     try {
       await register(email(), password());
-      setFlash("Registration successful!", "success");
+      setFlash("Welcome to La Maison Dorée!", "success");
       navigate("/");
     } catch (error: any) {
       setFlash(error.message || "Registration failed", "error");
@@ -39,16 +39,18 @@ export default function Register() {
   return (
     <div class="page">
       <div class="card">
-        <h1>Register</h1>
+        <h1>Join Us</h1>
+        <p>Create your account to start making reservations.</p>
 
         <Form onSubmit={handleSubmit}>
           <div class="form-group">
-            <label for="email">Email</label>
+            <label for="email">Email Address</label>
             <input
               type="email"
               id="email"
               value={email()}
               onInput={(e) => setEmail(e.currentTarget.value)}
+              placeholder="your@email.com"
               required
               disabled={loading()}
             />
@@ -61,6 +63,7 @@ export default function Register() {
               id="password"
               value={password()}
               onInput={(e) => setPassword(e.currentTarget.value)}
+              placeholder="At least 8 characters"
               required
               disabled={loading()}
               minLength={8}
@@ -74,19 +77,20 @@ export default function Register() {
               id="confirm-password"
               value={confirmPassword()}
               onInput={(e) => setConfirmPassword(e.currentTarget.value)}
+              placeholder="Confirm your password"
               required
               disabled={loading()}
               minLength={8}
             />
           </div>
 
-          <button type="submit" class="btn btn-primary" disabled={loading()}>
-            {loading() ? "Registering..." : "Register"}
+          <button type="submit" class="btn btn-primary" disabled={loading()} style="width: 100%;">
+            {loading() ? "Creating Account..." : "Create Account"}
           </button>
         </Form>
 
         <p class="text-center">
-          Already have an account? <a href="/login">Login</a>
+          Already a member? <a href="/login">Sign in</a>
         </p>
       </div>
     </div>

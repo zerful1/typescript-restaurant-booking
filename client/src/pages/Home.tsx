@@ -8,8 +8,14 @@ export default function Home() {
   return (
     <div class="page">
       <div class="hero">
-        <h1>Welcome to Restaurant Booking</h1>
-        <p>Reserve your table at our amazing restaurant</p>
+        <div class="hero-decoration">Est. 2015</div>
+        <h1>
+          Welcome to <span>La Maison Dorée</span>
+        </h1>
+        <p>
+          Experience the art of fine dining in an intimate, elegant setting. Our carefully curated
+          menu celebrates traditional cuisine with a modern touch.
+        </p>
 
         <Show when={!loading()}>
           <Show
@@ -17,20 +23,20 @@ export default function Home() {
             fallback={
               <div class="hero-buttons">
                 <A href="/register" class="btn btn-primary">
-                  Get Started
+                  Join Our Table
                 </A>
                 <A href="/login" class="btn btn-secondary">
-                  Login
+                  Sign In
                 </A>
               </div>
             }
           >
             <div class="hero-buttons">
               <A href="/book" class="btn btn-primary">
-                Make a Booking
+                Reserve a Table
               </A>
-              <A href="/bookings" class="btn btn-secondary">
-                View My Bookings
+              <A href="/menu" class="btn btn-secondary">
+                View Our Menu
               </A>
             </div>
           </Show>
@@ -39,16 +45,28 @@ export default function Home() {
 
       <div class="features">
         <div class="feature-card">
-          <h3>Easy Booking</h3>
-          <p>Book your table in just a few clicks</p>
+          <div class="feature-icon">🍽️</div>
+          <h3>Effortless Reservations</h3>
+          <p>
+            Secure your table with our simple online booking system. Choose your preferred date and
+            time.
+          </p>
         </div>
         <div class="feature-card">
-          <h3>Manage Reservations</h3>
-          <p>View and manage all your bookings in one place</p>
+          <div class="feature-icon">📋</div>
+          <h3>Curated Experiences</h3>
+          <p>
+            Browse our seasonal menu and pre-order dishes to ensure a perfectly tailored dining
+            experience.
+          </p>
         </div>
         <div class="feature-card">
-          <h3>Special Requests</h3>
-          <p>Add special instructions for your dining experience</p>
+          <div class="feature-icon">✨</div>
+          <h3>Personal Touch</h3>
+          <p>
+            Share your dietary preferences and special requests. We attend to every detail of your
+            visit.
+          </p>
         </div>
       </div>
     </div>

@@ -19,36 +19,53 @@ export default function CheckoutSuccess() {
 
   return (
     <div class="page">
-      <div class="checkout-result success">
-        <Show when={!verification.loading} fallback={<p>Verifying payment...</p>}>
+      <div class="checkout-message checkout-success">
+        <Show
+          when={!verification.loading}
+          fallback={<p style="color: var(--color-text-muted);">Verifying your payment...</p>}
+        >
           <Show
             when={verification()?.success}
             fallback={
               <>
-                <h1>⚠️ Payment Verification</h1>
-                <p>We couldn't verify your payment status. Please check your orders.</p>
-                <div class="checkout-actions">
+                <div class="checkout-icon">⚠️</div>
+                <h1>Payment Verification</h1>
+                <p style="color: var(--color-text-muted); margin-bottom: var(--space-xl);">
+                  We couldn't verify your payment status. Please check your orders.
+                </p>
+                <div
+                  class="checkout-actions"
+                  style="display: flex; gap: var(--space-md); justify-content: center; flex-wrap: wrap;"
+                >
                   <A href="/orders" class="btn btn-primary">
                     View Orders
                   </A>
                   <A href="/" class="btn btn-secondary">
-                    Go Home
+                    Return Home
                   </A>
                 </div>
               </>
             }
           >
-            <h1>🎉 Payment Successful!</h1>
-            <p>Thank you for your order. Your payment has been processed successfully.</p>
+            <div class="checkout-icon">✓</div>
+            <h1>Thank You!</h1>
+            <p style="color: var(--color-text-muted);">
+              Your order has been received and is being prepared.
+            </p>
             <Show when={verification()?.orderId}>
-              <p class="order-number">Order #{verification()?.orderId}</p>
+              <p style="font-family: var(--font-display); font-size: 1.25rem; color: var(--color-gold); margin: var(--space-lg) 0;">
+                Order #{verification()?.orderId}
+              </p>
             </Show>
-            <div class="checkout-actions">
+            <div
+              class="checkout-actions"
+              style="display: flex; gap: var(--space-md); justify-content: center; flex-wrap: wrap;"
+            >
               <A href="/orders" class="btn btn-primary">
                 View Orders
               </A>
               <A href="/menu" class="btn btn-secondary">
-                Continue Shopping
+                Continue Browsing
               </A>
             </div>
           </Show>

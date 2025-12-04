@@ -39,7 +39,7 @@ export default function BookingForm() {
         throw new Error(data.message || "Booking failed");
       }
 
-      setFlash("Booking created successfully!", "success");
+      setFlash("Your table has been reserved!", "success");
       navigate("/bookings");
     } catch (error: any) {
       setFlash(error.message || "Booking failed", "error");
@@ -52,7 +52,7 @@ export default function BookingForm() {
     <div class="booking-form-container">
       <Form onSubmit={handleSubmit}>
         <div class="form-group">
-          <label for="party-size">Party Size</label>
+          <label for="party-size">Number of Guests</label>
           <input
             type="number"
             id="party-size"
@@ -66,7 +66,7 @@ export default function BookingForm() {
         </div>
 
         <div class="form-group">
-          <label for="table-number">Table Number</label>
+          <label for="table-number">Preferred Table</label>
           <select
             id="table-number"
             value={tableNumber()}
@@ -80,7 +80,7 @@ export default function BookingForm() {
         </div>
 
         <div class="form-group">
-          <label for="datetime">Date and Time</label>
+          <label for="datetime">Date & Time</label>
           <input
             type="datetime-local"
             id="datetime"
@@ -92,19 +92,19 @@ export default function BookingForm() {
         </div>
 
         <div class="form-group">
-          <label for="special-instructions">Special Instructions (Optional)</label>
+          <label for="special-instructions">Special Requests (Optional)</label>
           <textarea
             id="special-instructions"
             value={specialInstructions()}
             onInput={(e) => setSpecialInstructions(e.currentTarget.value)}
             disabled={loading()}
             rows="4"
-            placeholder="Any dietary requirements or special requests..."
+            placeholder="Dietary requirements, celebrations, seating preferences..."
           />
         </div>
 
-        <button type="submit" class="btn btn-primary" disabled={loading()}>
-          {loading() ? "Creating Booking..." : "Create Booking"}
+        <button type="submit" class="btn btn-primary" disabled={loading()} style="width: 100%;">
+          {loading() ? "Reserving..." : "Confirm Reservation"}
         </button>
       </Form>
     </div>

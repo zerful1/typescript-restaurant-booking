@@ -28,7 +28,9 @@ export default function Booking() {
     <div class="page">
       <div class="booking-container">
         <div class="booking-header">
-          <h1>{view() === "create" ? "Make a Booking" : "My Bookings"}</h1>
+          <h1 style="color: var(--color-gold);">
+            {view() === "create" ? "Reserve a Table" : "My Reservations"}
+          </h1>
           <div class="booking-tabs">
             <button
               class={`tab ${view() === "list" ? "active" : ""}`}
@@ -37,7 +39,7 @@ export default function Booking() {
                 navigate("/bookings");
               }}
             >
-              My Bookings
+              My Reservations
             </button>
             <button
               class={`tab ${view() === "create" ? "active" : ""}`}
@@ -46,7 +48,7 @@ export default function Booking() {
                 navigate("/book");
               }}
             >
-              New Booking
+              New Reservation
             </button>
           </div>
         </div>

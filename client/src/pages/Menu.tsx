@@ -49,7 +49,7 @@ export default function Menu() {
     // Add to localStorage cart via context
     addItem(menuItemId, 1);
     refetchDetails();
-    setFlash("Item added to cart", "success");
+    setFlash("Added to your order", "success");
 
     // Brief visual feedback
     setTimeout(() => {
@@ -61,7 +61,7 @@ export default function Menu() {
     <div class="page menu-page">
       <div class="menu-header">
         <h1>Our Menu</h1>
-        <button class="cart-toggle-btn" onClick={openPanel}>
+        <button class="cart-toggle-btn" onClick={openPanel} title="View Cart">
           🛒
           <Show when={itemCount() > 0}>
             <span class="cart-badge">{itemCount()}</span>
@@ -69,14 +69,24 @@ export default function Menu() {
         </button>
       </div>
 
-      <Show when={!menuItems.loading} fallback={<p>Loading menu...</p>}>
-        <Show when={menuItems()} fallback={<p>Failed to load menu</p>}>
+      <Show
+        when={!menuItems.loading}
+        fallback={
+          <p style="text-align: center; color: var(--color-text-muted);">Loading our menu...</p>
+        }
+      >
+        <Show
+          when={menuItems()}
+          fallback={
+            <p style="text-align: center; color: var(--color-text-muted);">Unable to load menu</p>
+          }
+        >
           <div class="category-filter">
             <button
               class={`btn ${selectedCategory() === null ? "btn-primary" : "btn-secondary"}`}
               onClick={() => setSelectedCategory(null)}
             >
-              All
+              All Dishes
             </button>
             <For each={categories()}>
               {(category) => (
@@ -109,7 +119,7 @@ export default function Menu() {
                       onClick={() => addToCart(item.id)}
                       disabled={addingToCart() === item.id}
                     >
-                      {addingToCart() === item.id ? "Adding..." : "Add to Cart"}
+                      {addingToCart() === item.id ? "Adding..." : "Add to Order"}
                     </button>
                   </div>
                 </div>
