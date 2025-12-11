@@ -49,16 +49,16 @@ export default function Orders() {
   };
 
   return (
-    <div class="page">
+    <div class="orders-page">
       <h1>Your Orders</h1>
 
       <Show when={!authLoading()}>
         <Show
           when={user()}
           fallback={
-            <div class="auth-prompt">
+            <div class="empty-state">
               <p>Please log in to view your orders.</p>
-              <A href="/login" class="btn btn-primary">
+              <A href="/login" class="btn-primary">
                 Login
               </A>
             </div>
@@ -70,9 +70,9 @@ export default function Orders() {
                 <Show
                   when={orderList().length > 0}
                   fallback={
-                    <div class="empty-orders">
+                    <div class="empty-state">
                       <p>You haven't placed any orders yet.</p>
-                      <A href="/menu" class="btn btn-primary">
+                      <A href="/menu" class="btn-primary">
                         Browse Menu
                       </A>
                     </div>
@@ -82,15 +82,15 @@ export default function Orders() {
                     <For each={orderList()}>
                       {(order) => (
                         <div class="order-card">
-                          <div class="order-header">
-                            <span class="order-id">Order #{order.id}</span>
+                          <div class="order-card-header">
+                            <span>Order #{order.id}</span>
                             <span class={`order-status ${statusColor(order.status)}`}>
                               {order.status.charAt(0).toUpperCase() + order.status.slice(1)}
                             </span>
                           </div>
-                          <div class="order-details">
-                            <p class="order-date">{formatDate(order.created_at)}</p>
-                            <p class="order-total">
+                          <div class="order-card-details">
+                            <p>{formatDate(order.created_at)}</p>
+                            <p>
                               <strong>Total:</strong> £{Number(order.total).toFixed(2)}
                             </p>
                           </div>

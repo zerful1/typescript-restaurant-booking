@@ -6,56 +6,34 @@ export default function Nav() {
   const { user, loading, isAdmin } = useAuth();
 
   return (
-    <nav class="nav">
-      <div class="nav-container">
-        <A href="/" class="nav-brand">
-          La Maison Dorée
-        </A>
+    <nav>
+      <div>
+        <A href="/">Our Restaurant</A>
 
         <Show when={!loading()}>
-          <div class="nav-links">
+          <div>
             <Show
               when={user()}
               fallback={
                 <>
-                  <A href="/login" class="nav-link">
-                    Login
-                  </A>
-                  <A href="/register" class="nav-link">
-                    Register
-                  </A>
+                  <A href="/login">Login</A>
+                  <A href="/register">Register</A>
                 </>
               }
             >
-              <A href="/gallery" class="nav-link">
-                Gallery
-              </A>
+              <A href="/gallery">Gallery</A>
               <Show when={!isAdmin()}>
-                <A href="/menu" class="nav-link">
-                  Menu
-                </A>
-                <A href="/cart" class="nav-link">
-                  Cart
-                </A>
-                <A href="/orders" class="nav-link">
-                  Orders
-                </A>
-                <A href="/book" class="nav-link">
-                  Reservations
-                </A>
-                <A href="/profile" class="nav-link">
-                  Profile
-                </A>
+                <A href="/menu">Menu</A>
+                <A href="/cart">Cart</A>
+                <A href="/orders">Orders</A>
+                <A href="/book">Reservations</A>
+                <A href="/profile">Profile</A>
               </Show>
               <Show when={isAdmin()}>
-                <A href="/admin" class="nav-link admin-link">
-                  Admin
-                </A>
+                <A href="/admin">Admin</A>
               </Show>
 
-              <A href="/logout" class="nav-link">
-                Logout
-              </A>
+              <A href="/logout">Logout</A>
             </Show>
           </div>
         </Show>

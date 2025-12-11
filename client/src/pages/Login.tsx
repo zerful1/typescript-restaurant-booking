@@ -18,7 +18,7 @@ export default function Login() {
 
     try {
       await login(email(), password());
-      setFlash("Welcome back to La Maison Dorée!", "success");
+      setFlash("Welcome back!", "success");
       navigate("/");
     } catch (error: any) {
       setFlash(error.message || "Login failed", "error");
@@ -28,13 +28,13 @@ export default function Login() {
   };
 
   return (
-    <div class="page">
-      <div class="card">
+    <div>
+      <div>
         <h1>Welcome Back</h1>
         <p>Sign in to manage your reservations and orders.</p>
 
         <Form onSubmit={handleSubmit}>
-          <div class="form-group">
+          <div>
             <label for="email">Email Address</label>
             <input
               type="email"
@@ -47,7 +47,7 @@ export default function Login() {
             />
           </div>
 
-          <div class="form-group">
+          <div>
             <label for="password">Password</label>
             <input
               type="password"
@@ -61,15 +61,15 @@ export default function Login() {
             />
           </div>
 
-          <button type="submit" class="btn btn-primary" disabled={loading()} style="width: 100%;">
+          <button type="submit" disabled={loading()}>
             {loading() ? "Signing in..." : "Sign In"}
           </button>
         </Form>
 
-        <p class="text-center">
-          New to La Maison Dorée? <a href="/register">Create an account</a>
+        <p>
+          New here? <a href="/register">Create an account</a>
         </p>
-        <p class="text-center">
+        <p>
           <a href="/forgot">Forgot your password?</a>
         </p>
       </div>

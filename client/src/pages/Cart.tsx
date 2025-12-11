@@ -48,18 +48,16 @@ export default function Cart() {
   };
 
   return (
-    <div class="page">
+    <div>
       <h1>Your Cart</h1>
 
       <Show when={!authLoading()}>
         <Show
           when={user()}
           fallback={
-            <div class="auth-prompt">
+            <div>
               <p>Please log in to view your cart.</p>
-              <A href="/login" class="btn btn-primary">
-                Login
-              </A>
+              <A href="/login">Login</A>
             </div>
           }
         >
@@ -67,48 +65,37 @@ export default function Cart() {
             <Show
               when={cartWithDetails().length > 0}
               fallback={
-                <div class="empty-cart">
+                <div class="empty-state">
                   <p>Your cart is empty.</p>
-                  <A href="/menu" class="btn btn-primary">
+                  <A href="/menu" class="btn-primary">
                     Browse Menu
                   </A>
                 </div>
               }
             >
-              <div class="cart-items">
+              <div>
                 <For each={cartWithDetails()}>
                   {(item) => (
                     <Show when={item.details}>
-                      <div class="cart-item">
-                        <div class="cart-item-info">
+                      <div>
+                        <div>
                           <h3>{item.details!.name}</h3>
-                          <p class="cart-item-price">
-                            £{Number(item.details!.price).toFixed(2)} each
-                          </p>
+                          <p>£{Number(item.details!.price).toFixed(2)} each</p>
                         </div>
-                        <div class="cart-item-controls">
+                        <div>
                           <button
-                            class="btn btn-small"
                             onClick={() => updateQuantity(item.menuItemId, item.quantity - 1)}
                           >
                             -
                           </button>
-                          <span class="quantity">{item.quantity}</span>
+                          <span>{item.quantity}</span>
                           <button
-                            class="btn btn-small"
                             onClick={() => updateQuantity(item.menuItemId, item.quantity + 1)}
                           >
                             +
                           </button>
-                          <span class="item-total">
-                            £{(Number(item.details!.price) * item.quantity).toFixed(2)}
-                          </span>
-                          <button
-                            class="btn btn-danger btn-small"
-                            onClick={() => removeItem(item.menuItemId)}
-                          >
-                            Remove
-                          </button>
+                          <span>£{(Number(item.details!.price) * item.quantity).toFixed(2)}</span>
+                          <button onClick={() => removeItem(item.menuItemId)}>Remove</button>
                         </div>
                       </div>
                     </Show>
@@ -116,15 +103,13 @@ export default function Cart() {
                 </For>
               </div>
 
-              <div class="cart-summary">
-                <div class="cart-total">
+              <div>
+                <div>
                   <strong>Total:</strong> £{total().toFixed(2)}
                 </div>
-                <div class="cart-actions">
-                  <button class="btn btn-secondary" onClick={clearCart}>
-                    Clear Cart
-                  </button>
-                  <button class="btn btn-primary" onClick={checkout} disabled={checkingOut()}>
+                <div>
+                  <button onClick={clearCart}>Clear Cart</button>
+                  <button onClick={checkout} disabled={checkingOut()}>
                     {checkingOut() ? "Processing..." : "Checkout"}
                   </button>
                 </div>

@@ -3,7 +3,6 @@ import { type JSX } from "solid-js";
 interface FormProps {
   onSubmit: (e: Event) => void;
   children: JSX.Element;
-  class?: string;
 }
 
 export default function Form(props: FormProps) {
@@ -12,9 +11,5 @@ export default function Form(props: FormProps) {
     props.onSubmit(e);
   };
 
-  return (
-    <form onSubmit={handleSubmit} class={props.class}>
-      {props.children}
-    </form>
-  );
+  return <form onSubmit={handleSubmit}>{props.children}</form>;
 }

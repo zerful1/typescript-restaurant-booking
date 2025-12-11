@@ -60,12 +60,10 @@ export function CartProvider(props: { children: JSX.Element }) {
   const [items, setItems] = createSignal<CartItem[]>(loadCart());
   const [isPanelOpen, setIsPanelOpen] = createSignal(false);
 
-  // Persist to localStorage whenever items change
   createEffect(() => {
     localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(items()));
   });
 
-  // Fetch menu item details for cart items
   const fetchMenuDetails = async (cartItems: CartItem[]): Promise<MenuItemDetails[]> => {
     if (cartItems.length === 0) return [];
 

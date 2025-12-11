@@ -25,15 +25,13 @@ export default function Booking() {
   }
 
   return (
-    <div class="page">
+    <div class="booking-page">
       <div class="booking-container">
         <div class="booking-header">
-          <h1 style="color: var(--color-gold);">
-            {view() === "create" ? "Reserve a Table" : "My Reservations"}
-          </h1>
+          <h1>{view() === "create" ? "Reserve a Table" : "My Reservations"}</h1>
           <div class="booking-tabs">
             <button
-              class={`tab ${view() === "list" ? "active" : ""}`}
+              class={view() === "list" ? "tab-active" : ""}
               onClick={() => {
                 setView("list");
                 navigate("/bookings");
@@ -42,7 +40,7 @@ export default function Booking() {
               My Reservations
             </button>
             <button
-              class={`tab ${view() === "create" ? "active" : ""}`}
+              class={view() === "create" ? "tab-active" : ""}
               onClick={() => {
                 setView("create");
                 navigate("/book");
@@ -54,9 +52,11 @@ export default function Booking() {
         </div>
 
         <Show when={!loading()}>
-          <Show when={view() === "create"} fallback={<BookingList />}>
-            <BookingForm />
-          </Show>
+          <div class="booking-content">
+            <Show when={view() === "create"} fallback={<BookingList />}>
+              <BookingForm />
+            </Show>
+          </div>
         </Show>
       </div>
     </div>

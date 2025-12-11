@@ -27,7 +27,7 @@ export default function Register() {
 
     try {
       await register(email(), password());
-      setFlash("Welcome to La Maison Dorée!", "success");
+      setFlash("Welcome! Your account has been created.", "success");
       navigate("/");
     } catch (error: any) {
       setFlash(error.message || "Registration failed", "error");
@@ -37,13 +37,13 @@ export default function Register() {
   };
 
   return (
-    <div class="page">
-      <div class="card">
+    <div>
+      <div>
         <h1>Join Us</h1>
         <p>Create your account to start making reservations.</p>
 
         <Form onSubmit={handleSubmit}>
-          <div class="form-group">
+          <div>
             <label for="email">Email Address</label>
             <input
               type="email"
@@ -56,7 +56,7 @@ export default function Register() {
             />
           </div>
 
-          <div class="form-group">
+          <div>
             <label for="password">Password</label>
             <input
               type="password"
@@ -70,7 +70,7 @@ export default function Register() {
             />
           </div>
 
-          <div class="form-group">
+          <div>
             <label for="confirm-password">Confirm Password</label>
             <input
               type="password"
@@ -84,12 +84,12 @@ export default function Register() {
             />
           </div>
 
-          <button type="submit" class="btn btn-primary" disabled={loading()} style="width: 100%;">
+          <button type="submit" disabled={loading()}>
             {loading() ? "Creating Account..." : "Create Account"}
           </button>
         </Form>
 
-        <p class="text-center">
+        <p>
           Already a member? <a href="/login">Sign in</a>
         </p>
       </div>

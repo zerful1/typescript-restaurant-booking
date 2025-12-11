@@ -60,12 +60,12 @@ export default function ResetPassword() {
   };
 
   return (
-    <div class="page">
-      <div class="card">
+    <div>
+      <div>
         <h1>Reset Password</h1>
 
         <Form onSubmit={handleSubmit}>
-          <div class="form-group">
+          <div>
             <label for="token">Reset Token</label>
             <input
               type="text"
@@ -77,7 +77,7 @@ export default function ResetPassword() {
             />
           </div>
 
-          <div class="form-group">
+          <div>
             <label for="new-password">New Password</label>
             <input
               type="password"
@@ -90,7 +90,7 @@ export default function ResetPassword() {
             />
           </div>
 
-          <div class="form-group">
+          <div>
             <label for="confirm-password">Confirm New Password</label>
             <input
               type="password"
@@ -103,7 +103,7 @@ export default function ResetPassword() {
             />
           </div>
 
-          <button type="submit" class="btn btn-primary" disabled={loading()}>
+          <button type="submit" disabled={loading()}>
             {loading() ? "Resetting..." : "Reset Password"}
           </button>
         </Form>

@@ -49,9 +49,9 @@ export default function BookingForm() {
   };
 
   return (
-    <div class="booking-form-container">
+    <div class="booking-form">
       <Form onSubmit={handleSubmit}>
-        <div class="form-group">
+        <div>
           <label for="party-size">Number of Guests</label>
           <input
             type="number"
@@ -65,7 +65,7 @@ export default function BookingForm() {
           />
         </div>
 
-        <div class="form-group">
+        <div>
           <label for="table-number">Preferred Table</label>
           <select
             id="table-number"
@@ -79,7 +79,7 @@ export default function BookingForm() {
           </select>
         </div>
 
-        <div class="form-group">
+        <div>
           <label for="datetime">Date & Time</label>
           <input
             type="datetime-local"
@@ -91,7 +91,7 @@ export default function BookingForm() {
           />
         </div>
 
-        <div class="form-group">
+        <div>
           <label for="special-instructions">Special Requests (Optional)</label>
           <textarea
             id="special-instructions"
@@ -103,7 +103,7 @@ export default function BookingForm() {
           />
         </div>
 
-        <button type="submit" class="btn btn-primary" disabled={loading()} style="width: 100%;">
+        <button type="submit" disabled={loading()}>
           {loading() ? "Reserving..." : "Confirm Reservation"}
         </button>
       </Form>

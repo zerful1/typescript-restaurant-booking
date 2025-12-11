@@ -39,13 +39,13 @@ export default function ForgotPassword() {
   };
 
   return (
-    <div class="page">
-      <div class="card">
+    <div>
+      <div>
         <h1>Forgot Password</h1>
         <p>Enter your email to receive a password reset link.</p>
 
         <Form onSubmit={handleSubmit}>
-          <div class="form-group">
+          <div>
             <label for="email">Email</label>
             <input
               type="email"
@@ -57,13 +57,13 @@ export default function ForgotPassword() {
             />
           </div>
 
-          <button type="submit" class="btn btn-primary" disabled={loading()}>
+          <button type="submit" disabled={loading()}>
             {loading() ? "Sending..." : "Send Reset Link"}
           </button>
         </Form>
 
         {resetToken() && (
-          <div class="dev-token">
+          <div>
             <h3>Development Mode - Reset Token:</h3>
             <code>{resetToken()}</code>
             <p>
@@ -72,7 +72,7 @@ export default function ForgotPassword() {
           </div>
         )}
 
-        <p class="text-center">
+        <p>
           <a href="/login">Back to login</a>
         </p>
       </div>

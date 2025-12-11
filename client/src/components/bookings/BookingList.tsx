@@ -44,7 +44,7 @@ export default function BookingList() {
   };
 
   return (
-    <div class="booking-list-container">
+    <div class="booking-list">
       <Show when={loading()}>
         <p>Loading bookings...</p>
       </Show>
@@ -53,13 +53,13 @@ export default function BookingList() {
         <Show
           when={bookings().length > 0}
           fallback={
-            <div class="empty-state">
+            <div class="booking-empty">
               <p>You don't have any bookings yet.</p>
               <p>Create your first booking to get started!</p>
             </div>
           }
         >
-          <div class="booking-list">
+          <div class="booking-cards">
             <For each={bookings()}>
               {(booking) => <BookingCard booking={booking} onDelete={handleDelete} />}
             </For>

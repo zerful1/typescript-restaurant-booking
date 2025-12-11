@@ -32,10 +32,9 @@ export default function Gallery() {
   }
 
   return (
-    <div class="page-container">
+    <div class="gallery-page">
       <div class="gallery-header">
-        <h1 class="gallery-title">Our Gallery</h1>
-        <p class="gallery-subtitle">A glimpse into the La Maison Dorée experience</p>
+        <h1>Our Gallery</h1>
       </div>
 
       <Show when={loading()}>
@@ -46,7 +45,7 @@ export default function Gallery() {
 
       <Show when={!loading() && files().length === 0}>
         <div class="gallery-empty">
-          <div class="empty-icon">📷</div>
+          <div class="gallery-empty-icon">📷</div>
           <p>No images in the gallery yet</p>
         </div>
       </Show>
@@ -56,9 +55,9 @@ export default function Gallery() {
           <For each={files()}>
             {(file) => (
               <div class="gallery-item" onClick={() => openLightbox(file)}>
-                <img src={`/api/uploads/${file}`} alt={file} class="gallery-image" loading="lazy" />
-                <div class="gallery-overlay">
-                  <span class="gallery-filename">{file}</span>
+                <img src={`/api/uploads/${file}`} alt={file} loading="lazy" />
+                <div class="gallery-item-overlay">
+                  <span>{file}</span>
                 </div>
               </div>
             )}
@@ -75,7 +74,6 @@ export default function Gallery() {
           <img
             src={`/api/uploads/${selectedImage()}`}
             alt={selectedImage() || ""}
-            class="lightbox-image"
             onClick={(e) => e.stopPropagation()}
           />
         </div>

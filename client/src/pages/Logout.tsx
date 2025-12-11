@@ -20,7 +20,7 @@ export default function Logout() {
   });
 
   return (
-    <div class="logout-container">
+    <div>
       <p>Logging out...</p>
     </div>
   );

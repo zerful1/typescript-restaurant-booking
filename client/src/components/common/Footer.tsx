@@ -6,26 +6,16 @@ export default function Footer() {
   const { loading } = useAuth();
 
   return (
-    <footer class="footer">
-      <div class="footer-container">
+    <footer>
+      <div>
         <Show when={!loading()}>
-          <div class="footer-links">
-            <A href="/about" class="footer-link">
-              About Us
-            </A>
-            <A href="/contact" class="footer-link">
-              Contact
-            </A>
-            <A href="/menu" class="footer-link">
-              Our Menu
-            </A>
-            <A href="/gallery" class="footer-link">
-              Gallery
-            </A>
+          <div>
+            <A href="/about">About Us</A>
+            <A href="/contact">Contact</A>
+            <A href="/menu">Our Menu</A>
+            <A href="/gallery">Gallery</A>
           </div>
-          <p style="margin-top: 1.5rem; margin-bottom: 0; font-size: 0.85rem; color: var(--color-text-dim);">
-            © 2025 La Maison Dorée. All rights reserved.
-          </p>
+          <p>© 2025 Our Restaurant. All rights reserved.</p>
         </Show>
       </div>
     </footer>

@@ -56,27 +56,27 @@ export default function BookingCard(props: BookingCardProps) {
 
   return (
     <div class="booking-card">
-      <div class="booking-header">
+      <div class="booking-card-header">
         <h3>Booking #{props.booking.booking_id}</h3>
         <span class="booking-date">{formatDate(props.booking.booking_date)}</span>
       </div>
-      <div class="booking-details">
+      <div class="booking-card-details">
         <div class="booking-detail">
-          <span class="label">Party Size:</span>
-          <span class="value">{props.booking.party_size} people</span>
+          <span class="booking-detail-label">Party Size:</span>
+          <span class="booking-detail-value">{props.booking.party_size} people</span>
         </div>
         <div class="booking-detail">
-          <span class="label">Table:</span>
-          <span class="value">Table {props.booking.table_number}</span>
+          <span class="booking-detail-label">Table:</span>
+          <span class="booking-detail-value">Table {props.booking.table_number}</span>
         </div>
         {props.booking.special_instructions && (
           <div class="booking-detail">
-            <span class="label">Special Instructions:</span>
-            <span class="value">{props.booking.special_instructions}</span>
+            <span class="booking-detail-label">Special Instructions:</span>
+            <span class="booking-detail-value">{props.booking.special_instructions}</span>
           </div>
         )}
       </div>
-      <button class="btn btn-danger btn-small" onClick={handleDelete} disabled={deleting()}>
+      <button class="booking-delete-btn" onClick={handleDelete} disabled={deleting()}>
         {deleting() ? "Deleting..." : "Delete Booking"}
       </button>
     </div>

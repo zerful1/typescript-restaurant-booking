@@ -46,44 +46,32 @@ export default function Menu() {
   const addToCart = (menuItemId: number) => {
     setAddingToCart(menuItemId);
 
-    // Add to localStorage cart via context
     addItem(menuItemId, 1);
     refetchDetails();
     setFlash("Added to your order", "success");
 
-    // Brief visual feedback
     setTimeout(() => {
       setAddingToCart(null);
     }, 300);
   };
 
   return (
-    <div class="page menu-page">
+    <div class="menu-page">
       <div class="menu-header">
         <h1>Our Menu</h1>
-        <button class="cart-toggle-btn" onClick={openPanel} title="View Cart">
+        <button class="cart-button" onClick={openPanel} title="View Cart">
           🛒
           <Show when={itemCount() > 0}>
-            <span class="cart-badge">{itemCount()}</span>
+            <span class="cart-count">{itemCount()}</span>
           </Show>
         </button>
       </div>
 
-      <Show
-        when={!menuItems.loading}
-        fallback={
-          <p style="text-align: center; color: var(--color-text-muted);">Loading our menu...</p>
-        }
-      >
-        <Show
-          when={menuItems()}
-          fallback={
-            <p style="text-align: center; color: var(--color-text-muted);">Unable to load menu</p>
-          }
-        >
-          <div class="category-filter">
+      <Show when={!menuItems.loading} fallback={<p>Loading our menu...</p>}>
+        <Show when={menuItems()} fallback={<p>Unable to load menu</p>}>
+          <div class="menu-filters">
             <button
-              class={`btn ${selectedCategory() === null ? "btn-primary" : "btn-secondary"}`}
+              class={selectedCategory() === null ? "filter-active" : ""}
               onClick={() => setSelectedCategory(null)}
             >
               All Dishes
@@ -91,7 +79,7 @@ export default function Menu() {
             <For each={categories()}>
               {(category) => (
                 <button
-                  class={`btn ${selectedCategory() === category ? "btn-primary" : "btn-secondary"}`}
+                  class={selectedCategory() === category ? "filter-active" : ""}
                   onClick={() => setSelectedCategory(category)}
                 >
                   {category}
@@ -105,7 +93,7 @@ export default function Menu() {
               {(item) => (
                 <div class="menu-card">
                   <Show when={item.image_url}>
-                    <img src={item.image_url!} alt={item.name} class="menu-image" />
+                    <img src={item.image_url!} alt={item.name} />
                   </Show>
                   <div class="menu-card-content">
                     <h3>{item.name}</h3>
@@ -115,7 +103,7 @@ export default function Menu() {
                     </Show>
                     <p class="menu-price">£{Number(item.price).toFixed(2)}</p>
                     <button
-                      class="btn btn-primary"
+                      class="add-to-cart-btn"
                       onClick={() => addToCart(item.id)}
                       disabled={addingToCart() === item.id}
                     >
@@ -129,7 +117,6 @@ export default function Menu() {
         </Show>
       </Show>
 
-      {/* Cart Side Panel */}
       <CartSidePanel />
     </div>
   );
