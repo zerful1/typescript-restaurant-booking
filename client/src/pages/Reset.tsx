@@ -1,4 +1,4 @@
-import { createSignal, onMount } from "solid-js";
+import { onMount } from "solid-js";
 import { useNavigate, useSearchParams } from "@solidjs/router";
 import { useFlash } from "../contexts/FlashContext";
 import Form from "../components/common/Form";
@@ -8,39 +8,42 @@ export default function ResetPassword() {
   const { setFlash } = useFlash();
   const [searchParams] = useSearchParams();
 
-  const [token, setToken] = createSignal("");
-  const [newPassword, setNewPassword] = createSignal("");
-  const [confirmPassword, setConfirmPassword] = createSignal("");
-  const [loading, setLoading] = createSignal(false);
-
   onMount(() => {
     const tokenFromUrl = searchParams.token;
     if (tokenFromUrl) {
-      setToken(Array.isArray(tokenFromUrl) ? tokenFromUrl[0] : tokenFromUrl);
+      const tokenInput = document.getElementById("token") as HTMLInputElement;
+      if (tokenInput) {
+        tokenInput.value = Array.isArray(tokenFromUrl) ? tokenFromUrl[0] : tokenFromUrl;
+      }
     }
   });
 
-  const handleSubmit = async () => {
-    if (newPassword() !== confirmPassword()) {
+  const handleSubmit = async (e: Event) => {
+    e.preventDefault();
+    const form = e.target as HTMLFormElement;
+    const formData = new FormData(form);
+    const token = formData.get("token") as string;
+    const password = formData.get("password") as string;
+    const confirmPassword = formData.get("confirmPassword") as string;
+
+    if (password !== confirmPassword) {
       setFlash("Passwords do not match", "error");
       return;
     }
 
-    if (newPassword().length < 8) {
+    if (password.length < 8) {
       setFlash("Password must be at least 8 characters", "error");
       return;
     }
-
-    setLoading(true);
 
     try {
       const response = await fetch("/api/reset", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          token: token(),
-          password: newPassword(),
-          confirmPassword: confirmPassword(),
+          token,
+          password,
+          confirmPassword,
         }),
       });
 
@@ -54,9 +57,14 @@ export default function ResetPassword() {
       navigate("/login");
     } catch (error: any) {
       setFlash(error.message || "Reset failed", "error");
-    } finally {
-      setLoading(false);
     }
+  };
+
+  const formDetails = {
+    token: { Type: "text", Label: "Reset Token" },
+    password: { Type: "password", Label: "New Password" },
+    confirmPassword: { Type: "password", Label: "Confirm New Password" },
+    $submit: "Reset Password",
   };
 
   return (
@@ -64,49 +72,7 @@ export default function ResetPassword() {
       <div>
         <h1>Reset Password</h1>
 
-        <Form onSubmit={handleSubmit}>
-          <div>
-            <label for="token">Reset Token</label>
-            <input
-              type="text"
-              id="token"
-              value={token()}
-              onInput={(e) => setToken(e.currentTarget.value)}
-              required
-              disabled={loading()}
-            />
-          </div>
-
-          <div>
-            <label for="new-password">New Password</label>
-            <input
-              type="password"
-              id="new-password"
-              value={newPassword()}
-              onInput={(e) => setNewPassword(e.currentTarget.value)}
-              required
-              disabled={loading()}
-              minLength={8}
-            />
-          </div>
-
-          <div>
-            <label for="confirm-password">Confirm New Password</label>
-            <input
-              type="password"
-              id="confirm-password"
-              value={confirmPassword()}
-              onInput={(e) => setConfirmPassword(e.currentTarget.value)}
-              required
-              disabled={loading()}
-              minLength={8}
-            />
-          </div>
-
-          <button type="submit" disabled={loading()}>
-            {loading() ? "Resetting..." : "Reset Password"}
-          </button>
-        </Form>
+        <Form FormDetails={formDetails} SubmitCallback={handleSubmit} />
       </div>
     </div>
   );

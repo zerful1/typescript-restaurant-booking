@@ -4,19 +4,19 @@ import Form from "../components/common/Form";
 
 export default function ForgotPassword() {
   const { setFlash } = useFlash();
-
-  const [email, setEmail] = createSignal("");
-  const [loading, setLoading] = createSignal(false);
   const [resetToken, setResetToken] = createSignal<string | null>(null);
 
-  const handleSubmit = async () => {
-    setLoading(true);
+  const handleSubmit = async (e: Event) => {
+    e.preventDefault();
+    const form = e.target as HTMLFormElement;
+    const formData = new FormData(form);
+    const email = formData.get("email") as string;
 
     try {
       const response = await fetch("/api/forgot", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: email() }),
+        body: JSON.stringify({ email }),
       });
 
       const data = await response.json();
@@ -33,9 +33,12 @@ export default function ForgotPassword() {
       }
     } catch (error: any) {
       setFlash(error.message || "Request failed", "error");
-    } finally {
-      setLoading(false);
     }
+  };
+
+  const formDetails = {
+    email: { Type: "email", Label: "Email" },
+    $submit: "Send Reset Link",
   };
 
   return (
@@ -44,23 +47,7 @@ export default function ForgotPassword() {
         <h1>Forgot Password</h1>
         <p>Enter your email to receive a password reset link.</p>
 
-        <Form onSubmit={handleSubmit}>
-          <div>
-            <label for="email">Email</label>
-            <input
-              type="email"
-              id="email"
-              value={email()}
-              onInput={(e) => setEmail(e.currentTarget.value)}
-              required
-              disabled={loading()}
-            />
-          </div>
-
-          <button type="submit" disabled={loading()}>
-            {loading() ? "Sending..." : "Send Reset Link"}
-          </button>
-        </Form>
+        <Form FormDetails={formDetails} SubmitCallback={handleSubmit} />
 
         {resetToken() && (
           <div>

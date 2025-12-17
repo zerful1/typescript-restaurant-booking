@@ -1,4 +1,3 @@
-import { createSignal } from "solid-js";
 import { useNavigate } from "@solidjs/router";
 import { useFlash } from "../../contexts/FlashContext";
 import Form from "../common/Form";
@@ -7,29 +6,29 @@ export default function BookingForm() {
   const navigate = useNavigate();
   const { setFlash } = useFlash();
 
-  const [partySize, setPartySize] = createSignal(2);
-  const [tableNumber, setTableNumber] = createSignal(1);
-  const [datetime, setDatetime] = createSignal("");
-  const [specialInstructions, setSpecialInstructions] = createSignal("");
-  const [loading, setLoading] = createSignal(false);
+  const handleSubmit = async (e: Event) => {
+    e.preventDefault();
+    const form = e.target as HTMLFormElement;
+    const formData = new FormData(form);
+    const party_size = Number(formData.get("party_size"));
+    const table_number = Number(formData.get("table_number"));
+    const datetime = formData.get("datetime") as string;
+    const special_instructions = formData.get("special_instructions") as string;
 
-  const handleSubmit = async () => {
-    if (!datetime()) {
+    if (!datetime) {
       setFlash("Please select a date and time", "error");
       return;
     }
-
-    setLoading(true);
 
     try {
       const response = await fetch("/api/book/create", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          party_size: partySize(),
-          table_number: tableNumber(),
-          datetime: datetime(),
-          special_instructions: specialInstructions(),
+          party_size,
+          table_number,
+          datetime,
+          special_instructions,
         }),
       });
 
@@ -43,70 +42,20 @@ export default function BookingForm() {
       navigate("/bookings");
     } catch (error: any) {
       setFlash(error.message || "Booking failed", "error");
-    } finally {
-      setLoading(false);
     }
+  };
+
+  const formDetails = {
+    party_size: { Type: "number", Label: "Number of Guests" },
+    table_number: { Type: "number", Label: "Preferred Table" },
+    datetime: { Type: "datetime-local", Label: "Date & Time" },
+    special_instructions: { Type: "text", Label: "Special Requests (Optional)" },
+    $submit: "Confirm Reservation",
   };
 
   return (
     <div class="booking-form">
-      <Form onSubmit={handleSubmit}>
-        <div>
-          <label for="party-size">Number of Guests</label>
-          <input
-            type="number"
-            id="party-size"
-            value={partySize()}
-            onInput={(e) => setPartySize(Number(e.currentTarget.value))}
-            min="1"
-            max="20"
-            required
-            disabled={loading()}
-          />
-        </div>
-
-        <div>
-          <label for="table-number">Preferred Table</label>
-          <select
-            id="table-number"
-            value={tableNumber()}
-            onChange={(e) => setTableNumber(Number(e.currentTarget.value))}
-            disabled={loading()}
-          >
-            {Array.from({ length: 10 }, (_, i) => i + 1).map((num) => (
-              <option value={num}>Table {num}</option>
-            ))}
-          </select>
-        </div>
-
-        <div>
-          <label for="datetime">Date & Time</label>
-          <input
-            type="datetime-local"
-            id="datetime"
-            value={datetime()}
-            onInput={(e) => setDatetime(e.currentTarget.value)}
-            required
-            disabled={loading()}
-          />
-        </div>
-
-        <div>
-          <label for="special-instructions">Special Requests (Optional)</label>
-          <textarea
-            id="special-instructions"
-            value={specialInstructions()}
-            onInput={(e) => setSpecialInstructions(e.currentTarget.value)}
-            disabled={loading()}
-            rows="4"
-            placeholder="Dietary requirements, celebrations, seating preferences..."
-          />
-        </div>
-
-        <button type="submit" disabled={loading()}>
-          {loading() ? "Reserving..." : "Confirm Reservation"}
-        </button>
-      </Form>
+      <Form FormDetails={formDetails} SubmitCallback={handleSubmit} />
     </div>
   );
 }
