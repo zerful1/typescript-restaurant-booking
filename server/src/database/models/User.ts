@@ -7,6 +7,7 @@ export interface UserData {
   id: number;
   email: string;
   role: "user" | "admin";
+  created_at: Date;
 }
 
 export async function getUserId(email: string): Promise<number | false> {
@@ -50,7 +51,7 @@ export async function getUserData(id: number): Promise<UserData | null> {
   const pool = getPool();
 
   const [users] = await pool.query<RowDataPacket[]>(
-    "SELECT id, email, role FROM users WHERE id = ?",
+    "SELECT id, email, role, created_at FROM users WHERE id = ?",
     [id]
   );
 
@@ -59,16 +60,17 @@ export async function getUserData(id: number): Promise<UserData | null> {
   return users[0] as UserData;
 }
 
-export async function createPasswordReset(email: string): Promise<string> {
+export async function createPasswordReset(email: string): Promise<string | null> {
   const pool = getPool();
 
   const token = crypto.randomBytes(32).toString("hex");
-  const expires = new Date(Date.now() + 60 * 60 * 1000);
 
-  await pool.query<RowDataPacket[]>(
-    "UPDATE users SET reset_token = ?, reset_expires = ?, WHERE email = ?",
-    [token, expires, email]
+  const [result] = await pool.query<ResultSetHeader>(
+    "UPDATE users SET reset_token = ?, reset_expires = DATE_ADD(NOW(), INTERVAL 1 HOUR) WHERE email = ?",
+    [token, email]
   );
+
+  if (result.affectedRows === 0) return null;
 
   return token;
 }
@@ -81,11 +83,11 @@ export async function completePasswordReset(token: string, newPassword: string):
     [token]
   );
 
-  if (users.length > 0) return false;
+  if (users.length === 0) return false;
 
   const userId = users[0].id;
 
-  const hashedPassword = bcrypt.hash(newPassword, 10);
+  const hashedPassword = await bcrypt.hash(newPassword, 10);
 
   await pool.query<RowDataPacket[]>(
     "UPDATE users SET password_hash = ?, reset_token = NULL, reset_expires = NULL WHERE id = ?",
@@ -111,7 +113,7 @@ export async function getAllUsers(): Promise<UserData[]> {
   const pool = getPool();
 
   const [users] = await pool.query<RowDataPacket[]>(
-    "SELECT id, email, role FROM users ORDER BY id ASC"
+    "SELECT id, email, role, created_at FROM users ORDER BY id ASC"
   );
 
   return users as UserData[];

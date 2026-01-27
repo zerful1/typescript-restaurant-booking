@@ -9,7 +9,6 @@ export interface MenuItemData {
   category: string;
   image_url: string | null;
   available: boolean;
-  created_at: Date;
 }
 
 export async function getAllMenuItems(): Promise<MenuItemData[]> {

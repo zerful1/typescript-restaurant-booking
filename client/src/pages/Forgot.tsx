@@ -27,7 +27,7 @@ export default function ForgotPassword() {
 
       if (data.devToken) {
         setResetToken(data.devToken);
-        setFlash("Reset token genetared:", "success");
+        setFlash("Reset token generated:", "success");
       } else {
         setFlash(data.message, "success");
       }

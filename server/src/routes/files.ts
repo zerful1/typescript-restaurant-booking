@@ -36,6 +36,18 @@ router.get("/files/list", (_req, res) => {
 	res.json(files);
 });
 
+router.delete("/files/:filename", requireAdmin, (req, res) => {
+	const { filename } = req.params;
+	const filePath = `${upload_dir}/${filename}`;
+
+	if (!fs.existsSync(filePath)) {
+		return res.status(404).json({ message: "File not found" });
+	}
+
+	fs.unlinkSync(filePath);
+	return res.json({ message: "File deleted" });
+});
+
 router.use("/uploads", express.static(upload_dir));
 
 export default router;

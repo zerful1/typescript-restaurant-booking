@@ -7,7 +7,8 @@ CREATE TABLE IF NOT EXISTS users (
   password_hash VARCHAR(255) NOT NULL,
   role ENUM('user', 'admin') NOT NULL DEFAULT 'user',
   reset_token CHAR(64) DEFAULT NULL,
-  reset_expires DATETIME DEFAULT NULL
+  reset_expires DATETIME DEFAULT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE IF NOT EXISTS bookings (
@@ -27,20 +28,8 @@ CREATE TABLE IF NOT EXISTS menu_items (
   price DECIMAL(10, 2) NOT NULL,
   category VARCHAR(100) NOT NULL,
   image_url VARCHAR(500),
-  available BOOLEAN NOT NULL DEFAULT TRUE,
-  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+  available BOOLEAN NOT NULL DEFAULT TRUE
 );
-
-CREATE TABLE IF NOT EXISTS cart_items (
-  id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-  user_id INT UNSIGNED NOT NULL,
-  menu_item_id INT UNSIGNED NOT NULL,
-  quantity INT UNSIGNED NOT NULL DEFAULT 1,
-  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
-  FOREIGN KEY (menu_item_id) REFERENCES menu_items(id) ON DELETE CASCADE,
-  UNIQUE KEY unique_cart_item (user_id, menu_item_id)
-); -- save in localStorage instead
 
 CREATE TABLE IF NOT EXISTS orders (
   id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
@@ -61,12 +50,11 @@ CREATE TABLE IF NOT EXISTS order_items (
   FOREIGN KEY (order_id) REFERENCES orders(id) ON DELETE CASCADE,
   FOREIGN KEY (menu_item_id) REFERENCES menu_items(id) ON DELETE CASCADE
 );
--- "$2b$10$Fwi60zeuBL9Z0vMHy0Ygke7ZEzyVkDliAObo5M3J4zPnTLRxr78Mi"
+
 INSERT INTO users(email, password_hash, role) SELECT "admin@admin.com", "[admin]", "admin" WHERE NOT EXISTS (
   SELECT 1 FROM users WHERE email = "admin@admin.com"
 );
 
--- Seed some sample menu items
 INSERT INTO menu_items (name, description, price, category) SELECT "Margherita Pizza", "Classic tomato sauce, mozzarella, and fresh basil", 12.99, "Pizza" WHERE NOT EXISTS (SELECT 1 FROM menu_items WHERE name = "Margherita Pizza");
 INSERT INTO menu_items (name, description, price, category) SELECT "Pepperoni Pizza", "Tomato sauce, mozzarella, and pepperoni", 14.99, "Pizza" WHERE NOT EXISTS (SELECT 1 FROM menu_items WHERE name = "Pepperoni Pizza");
 INSERT INTO menu_items (name, description, price, category) SELECT "Caesar Salad", "Romaine lettuce, parmesan, croutons, Caesar dressing", 9.99, "Salads" WHERE NOT EXISTS (SELECT 1 FROM menu_items WHERE name = "Caesar Salad");

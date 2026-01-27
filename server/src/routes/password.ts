@@ -25,8 +25,8 @@ router.post("/forgot", async (req, res) => {
 
     return res.status(200).json({
       message: "Password reset token created",
-      token: token,
-      resetLink: `http://localhost:3000/reset?token=${token}`,
+      devToken: token,
+      resetLink: `http://localhost:3000/reset-password?token=${token}`,
     });
   } catch (error) {
     console.error("Password reset error:", error);

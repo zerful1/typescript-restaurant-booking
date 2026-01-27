@@ -11,7 +11,6 @@ import passwordRoute from "./routes/password.js";
 import bookingRoute from "./routes/booking.js";
 import adminRoute from "./routes/admin.js";
 import menuRoute from "./routes/menu.js";
-import cartRoute from "./routes/cart.js";
 import stripeRoute from "./routes/stripe.js";
 import filesRoute from "./routes/files.js";
 
@@ -40,7 +39,6 @@ app.use("/api", passwordRoute);
 app.use("/api", bookingRoute);
 app.use("/api", adminRoute);
 app.use("/api", menuRoute);
-app.use("/api", cartRoute);
 app.use("/api", stripeRoute);
 app.use("/api", filesRoute);
 
